@@ -1,0 +1,46 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Frontend / Next.js
+node_modules/
+.next/
+out/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend env
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# Python / FastAPI backend
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/*.pyc
+
+# Python cache anywhere
+__pycache__/
+*.py[cod]
+
+# Backend env
+backend/.env
+
+# Coverage
+coverage/
+htmlcov/
+AGENTS.md
+CLAUDE.md
