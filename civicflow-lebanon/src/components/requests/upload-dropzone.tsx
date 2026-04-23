@@ -1,71 +1,91 @@
 "use client";
 
-import { UploadCloud, FileText, X } from "lucide-react";
+import { useRef } from "react";
+import { Paperclip, Trash2, UploadCloud } from "lucide-react";
 
 interface UploadDropzoneProps {
-  files: string[];
-  onAddMockFile: () => void;
-  onRemoveFile: (fileName: string) => void;
+  files: File[];
+  onAddFiles: (files: File[]) => void;
+  onRemoveFile: (index: number) => void;
 }
 
 export function UploadDropzone({
   files,
-  onAddMockFile,
+  onAddFiles,
   onRemoveFile,
 }: UploadDropzoneProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const selectedFiles = Array.from(event.target.files || []);
+    if (selectedFiles.length > 0) {
+      onAddFiles(selectedFiles);
+    }
+    event.target.value = "";
+  }
+
   return (
     <div className="space-y-4">
-      <button
-        type="button"
-        onClick={onAddMockFile}
-        className="w-full rounded-[24px] border border-dashed border-white/15 bg-white/[0.03] p-8 text-center transition hover:bg-white/[0.05]"
-      >
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-blue-300">
+      <div className="rounded-[24px] border border-dashed border-white/15 bg-white/[0.03] p-6 text-center">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200">
           <UploadCloud className="h-6 w-6" />
         </div>
 
-        <div className="mt-4 text-base font-semibold text-white">
-          Upload supporting documents
-        </div>
+        <h3 className="mt-4 text-base font-semibold text-white">
+          Attach real files
+        </h3>
         <p className="mt-2 text-sm leading-6 text-slate-400">
-          Drag and drop files here later. For now, click this area to add a demo
-          document.
+          Choose PDF, image, or document files from your computer.
         </p>
-      </button>
 
-      {files.length > 0 ? (
-        <div className="space-y-3">
-          {files.map((fileName) => (
-            <div
-              key={fileName}
-              className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300">
-                  <FileText className="h-4 w-4" />
-                </div>
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={handleChange}
+        />
 
-                <div>
-                  <div className="text-sm font-medium text-white">
-                    {fileName}
-                  </div>
-                  <div className="text-xs text-slate-400">
-                    Demo uploaded document
-                  </div>
-                </div>
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+        >
+          <Paperclip className="h-4 w-4" />
+          Choose Files
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {files.map((file, index) => (
+          <div
+            key={`${file.name}-${index}`}
+            className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
+          >
+            <div>
+              <div className="text-sm font-medium text-white">{file.name}</div>
+              <div className="mt-1 text-xs text-slate-400">
+                {Math.max(1, Math.round(file.size / 1024))} KB
               </div>
-
-              <button
-                type="button"
-                onClick={() => onRemoveFile(fileName)}
-                className="rounded-full border border-white/10 bg-white/5 p-2 text-slate-300 transition hover:bg-white/10 hover:text-white"
-              >
-                <X className="h-4 w-4" />
-              </button>
             </div>
-          ))}
-        </div>
-      ) : null}
+
+            <button
+              type="button"
+              onClick={() => onRemoveFile(index)}
+              className="inline-flex items-center gap-2 rounded-full border border-rose-400/20 bg-rose-500/10 px-3 py-1.5 text-xs font-semibold text-rose-200 transition hover:bg-rose-500/15"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Remove
+            </button>
+          </div>
+        ))}
+
+        {files.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-400">
+            No files attached yet.
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

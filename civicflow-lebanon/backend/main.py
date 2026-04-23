@@ -1,13 +1,17 @@
 from datetime import datetime
+from pathlib import Path
+import re
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, File, Form, UploadFile, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from auth import (
     authenticate_user,
     create_access_token,
+    decode_access_token,
     get_current_user,
     hash_password,
     require_roles,
@@ -45,6 +49,9 @@ app.add_middleware(
 )
 
 Base.metadata.create_all(bind=engine)
+
+UPLOADS_DIR = Path(__file__).resolve().parent / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
 
 
 def current_timestamp():
@@ -111,6 +118,7 @@ def serialize_document(document: RequestDocument):
         "mime_type": document.mime_type,
         "size_label": document.size_label,
         "uploaded_at": document.uploaded_at,
+        "download_path": f"/documents/{document.id}/download",
     }
 
 
@@ -142,6 +150,36 @@ def sort_requests_for_queue(requests: list[ServiceRequest]) -> list[ServiceReque
 
 def role_label(role: str) -> str:
     return role.replace("_", " ").title()
+
+
+def format_size(num_bytes: int) -> str:
+    if num_bytes < 1024:
+        return f"{num_bytes} B"
+    if num_bytes < 1024 * 1024:
+        return f"{round(num_bytes / 1024)} KB"
+    return f"{round(num_bytes / (1024 * 1024), 1)} MB"
+
+
+def sanitize_filename(filename: str) -> str:
+    safe = re.sub(r"[^A-Za-z0-9._-]", "-", filename or "document")
+    return safe[:120] or "document"
+
+
+def resolve_document_path(document: RequestDocument) -> Path:
+    return UPLOADS_DIR / f"{document.id}__{sanitize_filename(document.file_name)}"
+
+
+def get_user_from_access_token(token: str, db: Session) -> User:
+    payload = decode_access_token(token)
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user or not user.is_active:
+        raise HTTPException(status_code=401, detail="User not found or inactive")
+
+    return user
 
 
 class LoginPayload(BaseModel):
@@ -213,7 +251,7 @@ def login(payload: LoginPayload, db: Session = Depends(get_db)):
 
 @app.post("/auth/register")
 def register(payload: RegisterPayload, db: Session = Depends(get_db)):
-    existing_user = db.query(User).filter(User.email == payload.email).first()
+    existing_user = db.query(User).filter(User.email == payload.email.strip().lower()).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email is already registered")
 
@@ -317,12 +355,17 @@ def get_my_request_details(
 
 
 @app.post("/me/requests")
-def create_my_request(
-    payload: CreateRequestPayload,
+async def create_my_request(
+    service_id: str = Form(...),
+    title: str = Form(...),
+    priority: str = Form("Medium"),
+    summary: str = Form(...),
+    notes: str | None = Form(None),
+    files: list[UploadFile] | None = File(None),
     current_user: User = Depends(require_roles("citizen")),
     db: Session = Depends(get_db),
 ):
-    service = db.query(Service).filter(Service.id == payload.service_id).first()
+    service = db.query(Service).filter(Service.id == service_id).first()
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
 
@@ -341,15 +384,15 @@ def create_my_request(
         service_id=service.id,
         citizen_user_id=current_user.id,
         reference=generate_request_reference(db),
-        title=payload.title,
+        title=title,
         status="Submitted",
-        priority=payload.priority,
+        priority=priority,
         submitted_at=now,
         updated_at=now,
         department=service.category,
         assigned_reviewer_id=None,
-        summary=payload.summary,
-        notes=payload.notes,
+        summary=summary,
+        notes=notes,
         is_escalated=False,
         escalated_at=None,
     )
@@ -370,16 +413,21 @@ def create_my_request(
     db.add(initial_activity)
 
     created_documents = []
-    for index, file_name in enumerate(payload.documents, start=1):
+    for index, upload in enumerate(files or [], start=1):
+        document_id = f"doc-{request_id}-{index}"
+        content = await upload.read()
         document = RequestDocument(
-            id=f"doc-{request_id}-{index}",
+            id=document_id,
             request_id=request_id,
-            file_name=file_name,
-            mime_type="application/octet-stream",
-            size_label="Unknown",
+            file_name=upload.filename or f"document-{index}",
+            mime_type=upload.content_type or "application/octet-stream",
+            size_label=format_size(len(content)),
             uploaded_at=now,
         )
         db.add(document)
+
+        output_path = resolve_document_path(document)
+        output_path.write_bytes(content)
         created_documents.append(document)
 
     db.commit()
@@ -390,6 +438,36 @@ def create_my_request(
         "activity": serialize_activity(initial_activity),
         "documents": [serialize_document(doc) for doc in created_documents],
     }
+
+
+@app.get("/documents/{document_id}/download")
+def download_document(
+    document_id: str,
+    token: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    current_user = get_user_from_access_token(token, db)
+
+    document = db.query(RequestDocument).filter(RequestDocument.id == document_id).first()
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    request = db.query(ServiceRequest).filter(ServiceRequest.id == document.request_id).first()
+    if not request:
+        raise HTTPException(status_code=404, detail="Parent request not found")
+
+    if not can_access_request(current_user, request):
+        raise HTTPException(status_code=403, detail="You do not have access to this document")
+
+    file_path = resolve_document_path(document)
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Stored file not found")
+
+    return FileResponse(
+        file_path,
+        media_type=document.mime_type or "application/octet-stream",
+        filename=document.file_name,
+    )
 
 
 @app.patch("/me/requests/{request_id}/status")

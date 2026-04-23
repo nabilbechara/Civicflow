@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { RequestStepper } from "@/components/requests/request-stepper";
 import { UploadDropzone } from "@/components/requests/upload-dropzone";
 import { services } from "@/lib/mock-data";
 import { createRequest } from "@/lib/request-api";
+import { useAuth } from "@/context/auth-context";
 
 const steps = ["Service", "Details", "Documents", "Review"];
 
@@ -32,6 +33,7 @@ const requirementsByService: Record<string, string[]> = {
 export default function NewRequestPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
   const serviceId = searchParams.get("service") || services[0]?.id || "";
 
   const selectedService = useMemo(
@@ -40,26 +42,23 @@ export default function NewRequestPage() {
   );
 
   const [step, setStep] = useState(1);
-  const [fullName, setFullName] = useState("Maya Haddad");
-  const [phone, setPhone] = useState("+961 70 123 456");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [files, setFiles] = useState<string[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (user?.full_name) {
+      setFullName(user.full_name);
+    }
+  }, [user?.full_name]);
 
   const requirements = requirementsByService[selectedService?.title || ""] || [
     "Supporting document",
     "Municipality-specific requirement",
   ];
-
-  function handleAddMockFile() {
-    const count = files.length + 1;
-    setFiles((current) => [...current, `uploaded-document-${count}.pdf`]);
-  }
-
-  function handleRemoveFile(fileName: string) {
-    setFiles((current) => current.filter((file) => file !== fileName));
-  }
 
   function nextStep() {
     if (step === 2) {
@@ -103,9 +102,9 @@ export default function NewRequestPage() {
         applicantName: fullName.trim(),
         applicantPhone: phone.trim(),
         notes: notes.trim(),
-        files,
+        files: files as any,
         priority: "Medium",
-      });
+      } as any);
 
       router.push(`/citizen/request/submitted?id=${createdRequest.id}`);
     } catch (err) {
@@ -180,7 +179,8 @@ export default function NewRequestPage() {
                   <input
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none"
+                    placeholder="Enter your phone number"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-500"
                   />
                 </div>
 
@@ -209,9 +209,17 @@ export default function NewRequestPage() {
 
               <div className="mt-6">
                 <UploadDropzone
-                  files={files}
-                  onAddMockFile={handleAddMockFile}
-                  onRemoveFile={handleRemoveFile}
+                  files={files as File[]}
+                  onAddFiles={(newFiles) =>
+                    setFiles((current) => [...current, ...newFiles])
+                  }
+                  onRemoveFile={(index) =>
+                    setFiles((current) =>
+                      current.filter(
+                        (_, currentIndex) => currentIndex !== index,
+                      ),
+                    )
+                  }
                 />
               </div>
             </div>
@@ -243,7 +251,7 @@ export default function NewRequestPage() {
 
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                   <div className="text-sm text-slate-400">Supporting notes</div>
-                  <div className="mt-1 text-sm leading-7 text-slate-300">
+                  <div className="mt-1 text-base text-white">
                     {notes || "No additional notes provided."}
                   </div>
                 </div>
@@ -252,10 +260,10 @@ export default function NewRequestPage() {
                   <div className="text-sm text-slate-400">
                     Uploaded documents
                   </div>
-                  <div className="mt-2 text-sm text-slate-300">
+                  <div className="mt-3 text-base text-white">
                     {files.length > 0
-                      ? files.join(", ")
-                      : "No documents uploaded yet."}
+                      ? files.map((file: File) => file.name).join(", ")
+                      : "No documents attached."}
                   </div>
                 </div>
               </div>
@@ -263,22 +271,31 @@ export default function NewRequestPage() {
           ) : null}
 
           {error ? (
-            <div className="mt-6 rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+            <div className="mt-6 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-4 text-sm text-rose-200">
               {error}
             </div>
           ) : null}
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {step > 1 ? (
-              <Button variant="secondary" onClick={previousStep}>
-                Back
-              </Button>
-            ) : null}
+          <div className="mt-8 flex items-center justify-between gap-3">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={previousStep}
+              disabled={step === 1 || isSubmitting}
+            >
+              Back
+            </Button>
 
             {step < 4 ? (
-              <Button onClick={nextStep}>Continue</Button>
+              <Button type="button" onClick={nextStep}>
+                Continue
+              </Button>
             ) : (
-              <Button onClick={submitRequest} disabled={isSubmitting}>
+              <Button
+                type="button"
+                onClick={submitRequest}
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? "Submitting..." : "Submit Request"}
               </Button>
             )}
@@ -286,25 +303,25 @@ export default function NewRequestPage() {
         </div>
 
         <div className="glass-panel rounded-[24px] p-6">
-          <h3 className="text-lg font-semibold">Requirements</h3>
+          <h3 className="text-xl font-semibold">Requirements</h3>
           <p className="mt-1 text-sm text-slate-400">
             Municipality guidance for this service.
           </p>
 
-          <div className="mt-5 space-y-3">
-            {requirements.map((item) => (
+          <div className="mt-6 space-y-3">
+            {requirements.map((requirement) => (
               <div
-                key={item}
+                key={requirement}
                 className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200"
               >
-                {item}
+                {requirement}
               </div>
             ))}
           </div>
 
-          <div className="mt-6 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-200">
-            Demo note: later this panel will come from tenant-specific service
-            configuration.
+          <div className="mt-6 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm leading-6 text-amber-200">
+            Real uploaded files will now be attached to this request and visible
+            during municipal review.
           </div>
         </div>
       </div>
