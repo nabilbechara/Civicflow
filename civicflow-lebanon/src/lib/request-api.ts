@@ -46,6 +46,7 @@ interface BackendDocument {
   mime_type?: string | null;
   size_label?: string | null;
   uploaded_at: string;
+  download_path?: string;
 }
 
 interface BackendRequestDetailsResponse {
@@ -70,11 +71,11 @@ function mapReviewerName(assignedReviewerId?: string | null) {
 }
 
 function mapCitizenProfile(citizenUserId: string) {
-  const storedUser = getStoredUser();
+  const currentUser = getStoredUser();
 
-  if (storedUser && storedUser.id === citizenUserId) {
+  if (currentUser && currentUser.id === citizenUserId) {
     return {
-      applicantName: storedUser.full_name,
+      applicantName: currentUser.full_name,
       applicantPhone: "Not provided",
     };
   }
@@ -148,7 +149,8 @@ function mapRequestToFrontend(
       uploadedAt: doc.uploaded_at,
       sizeLabel: doc.size_label || "Unknown",
       mimeType: doc.mime_type || "application/octet-stream",
-    })),
+      downloadPath: doc.download_path || undefined,
+    })) as any,
     timeline: mappedTimeline,
     activity: mappedActivity,
   };
@@ -162,7 +164,6 @@ async function fetchWithAuth(input: string, init?: RequestInit) {
     headers: {
       ...(init?.headers || {}),
       Authorization: token ? `Bearer ${token}` : "",
-      "Content-Type": "application/json",
     },
     cache: "no-store",
   });
@@ -178,19 +179,30 @@ export async function createRequest(
   input: CreateRequestInput,
 ): Promise<ServiceRequest> {
   const service = services.find((item) => item.id === input.serviceId);
+  const formData = new FormData();
+
+  formData.append("service_id", input.serviceId);
+  formData.append(
+    "title",
+    service ? `${service.title} Request` : "New citizen request",
+  );
+  formData.append("priority", input.priority || "Medium");
+  formData.append(
+    "summary",
+    input.notes.trim() ||
+      `Citizen submitted a new request for ${service?.title || "a municipal service"}.`,
+  );
+  formData.append("notes", input.notes);
+
+  (input.files as any[]).forEach((file) => {
+    if (file instanceof File) {
+      formData.append("files", file);
+    }
+  });
 
   const response = await fetchWithAuth(`${API_BASE_URL}/me/requests`, {
     method: "POST",
-    body: JSON.stringify({
-      service_id: input.serviceId,
-      title: service ? `${service.title} Request` : "New citizen request",
-      priority: input.priority || "Medium",
-      summary:
-        input.notes.trim() ||
-        `Citizen submitted a new request for ${service?.title || "a municipal service"}.`,
-      notes: input.notes,
-      documents: input.files,
-    }),
+    body: formData,
   });
 
   if (!response.ok) {
@@ -286,6 +298,9 @@ export async function updateRequestStatus({
     `${API_BASE_URL}/me/requests/${id}/status`,
     {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         status,
         actor_name: actor,

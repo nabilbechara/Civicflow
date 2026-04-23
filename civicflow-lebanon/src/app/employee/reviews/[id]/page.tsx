@@ -3,18 +3,22 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ExternalLink, ShieldAlert } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { RequestSummaryCard } from "@/components/requests/request-summary-card";
 import { RequestTimeline } from "@/components/requests/request-timeline";
 import { RequestActivityFeed } from "@/components/requests/request-activity-feed";
 import { getRequestById, updateRequestStatus } from "@/lib/request-api";
+import { getAccessToken } from "@/lib/auth";
 import { useAuth } from "@/context/auth-context";
 import type { RequestStatus, ServiceRequest } from "@/types";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
 export default function EmployeeReviewPage() {
   const params = useParams<{ id: string }>();
   const { user } = useAuth();
+  const token = getAccessToken();
   const requestId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [request, setRequest] = useState<ServiceRequest | null>(null);
   const [error, setError] = useState("");
@@ -229,13 +233,27 @@ export default function EmployeeReviewPage() {
             </h3>
             <div className="mt-4 space-y-2">
               {request.documents && request.documents.length > 0 ? (
-                request.documents.map((document) => (
-                  <div
+                request.documents.map((document: any) => (
+                  <a
                     key={document.id}
-                    className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200"
+                    href={`${API_BASE_URL}/documents/${document.id}/download?token=${encodeURIComponent(token || "")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200 transition hover:bg-white/[0.06]"
                   >
-                    {document.name}
-                  </div>
+                    <div>
+                      <div className="font-medium text-white">
+                        {document.name}
+                      </div>
+                      <div className="mt-1 text-xs text-slate-400">
+                        {document.sizeLabel || "Unknown size"}
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-2 text-xs text-blue-200">
+                      Open
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </span>
+                  </a>
                 ))
               ) : (
                 <div className="text-sm text-slate-400">
