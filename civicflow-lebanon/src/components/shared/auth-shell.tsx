@@ -22,7 +22,7 @@ export function AuthShell({
   children,
 }: AuthShellProps) {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.18),transparent_26%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_24%),linear-gradient(180deg,#08101d_0%,#0a1323_40%,#0c1729_100%)] text-white">
+    <main className="min-h-screen bg-[var(--background-soft)] text-slate-900">
       <div className="container-shell grid min-h-screen items-center gap-8 py-10 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="glass-panel rounded-[32px] p-8 lg:p-10">
           <div className="mb-8">
@@ -34,7 +34,7 @@ export function AuthShell({
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
               {title}
             </h1>
-            <p className="mt-4 text-base leading-8 text-slate-300">
+            <p className="mt-4 text-base leading-8 text-slate-600">
               {description}
             </p>
           </div>
@@ -59,19 +59,19 @@ export function AuthShell({
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+                className="rounded-2xl border border-[var(--border)] bg-white p-4"
               >
-                <item.icon className="mb-3 h-5 w-5 text-blue-300" />
+                <item.icon className="mb-3 h-5 w-5 text-[var(--primary-cta)]" />
                 <div className="text-sm font-semibold">{item.title}</div>
-                <p className="mt-2 text-sm leading-6 text-slate-400">
+                <p className="mt-2 text-sm leading-6 text-slate-600">
                   {item.text}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-10 rounded-3xl border border-white/10 bg-slate-950/30 p-5">
-            <div className="text-sm font-medium text-slate-300">
+          <div className="mt-10 rounded-3xl border border-[var(--border)] bg-white p-5">
+            <div className="text-sm font-medium text-slate-700">
               Demo municipalities
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -82,7 +82,7 @@ export function AuthShell({
               ].map((item) => (
                 <div
                   key={item}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200"
+                  className="rounded-2xl border border-blue-100 bg-blue-50/60 px-4 py-3 text-sm text-slate-700"
                 >
                   {item}
                 </div>
@@ -91,14 +91,14 @@ export function AuthShell({
           </div>
         </section>
 
-        <section className="glass-panel rounded-[32px] p-8 lg:p-10">
+        <section className="rounded-[32px] border border-[var(--border)] bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.06)] lg:p-10">
           {children}
 
-          <div className="mt-6 text-sm text-slate-400">
+          <div className="mt-6 text-sm text-slate-600">
             {footerText}{" "}
             <a
               href={footerHref}
-              className="font-medium text-white transition hover:text-blue-300"
+              className="font-medium text-[var(--primary-cta)] transition hover:text-[var(--primary-cta-hover)]"
             >
               {footerLinkText}
             </a>

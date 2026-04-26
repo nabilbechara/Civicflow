@@ -76,21 +76,21 @@ export function DashboardShell({
   const homeHref = user ? getDefaultRedirectForRole(user.role) : "/";
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.18),transparent_26%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_24%),linear-gradient(180deg,#08101d_0%,#0a1323_40%,#0c1729_100%)] text-white">
+    <main className="min-h-screen bg-[var(--background-soft)] text-slate-900">
       <div className="flex min-h-screen">
-        <aside className="hidden w-72 border-r border-white/10 bg-[#08101d]/80 px-6 py-6 backdrop-blur-xl lg:block">
+        <aside className="hidden w-72 border-r border-[var(--border)] bg-white px-6 py-6 lg:block">
           <Link href={homeHref}>
             <Logo />
           </Link>
 
-          <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-4">
-            <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+          <div className="mt-8 rounded-3xl border border-[var(--border)] bg-blue-50/60 p-4">
+            <div className="text-xs uppercase tracking-[0.2em] text-slate-500">
               Workspace
             </div>
-            <div className="mt-2 text-lg font-semibold text-white">
+            <div className="mt-2 text-lg font-semibold text-slate-900">
               {workspaceName}
             </div>
-            <div className="mt-1 text-sm text-slate-400">
+            <div className="mt-1 text-sm text-slate-600">
               {user?.municipality || "CivicFlow Lebanon"}
             </div>
           </div>
@@ -107,8 +107,8 @@ export function DashboardShell({
                   href={item.href}
                   className={`block rounded-2xl px-4 py-3 text-sm transition ${
                     isActive
-                      ? "border border-white/10 bg-white/[0.08] font-semibold text-white"
-                      : "border border-transparent text-slate-300 hover:border-white/10 hover:bg-white/[0.04] hover:text-white"
+                      ? "border border-blue-200 bg-blue-50 font-semibold text-[var(--primary)]"
+                      : "border border-transparent text-slate-600 hover:border-blue-100 hover:bg-blue-50/50 hover:text-[var(--primary)]"
                   }`}
                 >
                   {item.label}
@@ -119,18 +119,18 @@ export function DashboardShell({
         </aside>
 
         <div className="flex-1">
-          <header className="border-b border-white/10 bg-[#08101d]/70 backdrop-blur-xl">
+          <header className="border-b border-[var(--border)] bg-white/95 backdrop-blur-md">
             <div className="container-shell flex items-center justify-between py-5">
               <div>
-                <div className="text-sm text-slate-400">{roleLabel}</div>
+                <div className="text-sm text-slate-500">{roleLabel}</div>
                 <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
                   {title}
                 </h1>
-                <p className="mt-2 text-sm text-slate-400">{subtitle}</p>
+                <p className="mt-2 text-sm text-slate-600">{subtitle}</p>
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white">
+                <button className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white text-slate-500 transition hover:bg-blue-50 hover:text-[var(--primary)]">
                   <Bell className="h-4 w-4" />
                 </button>
 
@@ -140,19 +140,19 @@ export function DashboardShell({
                       ? "/citizen/settings"
                       : "/employee/settings"
                   }
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-blue-100 bg-white text-slate-500 transition hover:bg-blue-50 hover:text-[var(--primary)]"
                 >
                   <Settings className="h-4 w-4" />
                 </Link>
 
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white">
+                <div className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-4 py-2 text-sm font-medium text-slate-700">
                   <UserCircle2 className="h-4 w-4" />
                   {user?.full_name || "Signed-in user"}
                 </div>
 
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-blue-50"
                 >
                   <LogOut className="h-4 w-4" />
                   Log out
