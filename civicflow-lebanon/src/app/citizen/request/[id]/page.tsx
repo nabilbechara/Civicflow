@@ -51,7 +51,7 @@ export default function CitizenRequestDetailsPage() {
         title="Request Tracking"
         subtitle="Follow every stage of your request with a transparent review history."
       >
-        <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
+        <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
           <div className="text-xl font-semibold text-white">
             {error || "Request not found"}
           </div>
@@ -97,19 +97,19 @@ export default function CitizenRequestDetailsPage() {
             assignedReviewer={request.assignedReviewer}
           />
 
-          <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
+          <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
             <h3 className="text-lg font-semibold text-white">
               Applicant details
             </h3>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                 <div className="text-sm text-slate-400">Applicant name</div>
                 <div className="mt-2 text-sm font-medium text-white">
                   {request.applicantName || "Not available"}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                 <div className="text-sm text-slate-400">Phone</div>
                 <div className="mt-2 text-sm font-medium text-white">
                   {request.applicantPhone || "Not available"}
@@ -117,14 +117,14 @@ export default function CitizenRequestDetailsPage() {
               </div>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="theme-surface mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="text-sm text-slate-400">Notes</div>
               <div className="mt-2 text-sm leading-7 text-slate-300">
                 {request.notes || "No additional notes provided."}
               </div>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="theme-surface mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="text-sm text-slate-400">Uploaded documents</div>
               <div className="mt-3 space-y-2">
                 {request.documents && request.documents.length > 0 ? (

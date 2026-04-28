@@ -177,7 +177,7 @@ export default function EmployeeDashboardPage() {
             {priorityRequests.map((request) => (
               <div
                 key={request.id}
-                className="rounded-2xl border border-amber-400/20 bg-amber-500/5 p-4"
+                className="theme-surface rounded-2xl border border-amber-400/20 bg-amber-500/5 p-4"
               >
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                   <div>
@@ -237,7 +237,7 @@ export default function EmployeeDashboardPage() {
             ))}
 
             {priorityRequests.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+              <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
                 No escalated or high-priority requests right now.
               </div>
             ) : null}
@@ -254,7 +254,7 @@ export default function EmployeeDashboardPage() {
             {standardQueue.map((request) => (
               <div
                 key={request.id}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4"
               >
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                   <div>
@@ -303,7 +303,7 @@ export default function EmployeeDashboardPage() {
             ))}
 
             {standardQueue.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+              <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
                 No standard queue items found.
               </div>
             ) : null}

@@ -12,7 +12,7 @@ interface RequestTimelineProps {
 
 export function RequestTimeline({ items }: RequestTimelineProps) {
   return (
-    <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
+    <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
       <h3 className="text-lg font-semibold text-white">Request timeline</h3>
       <p className="mt-1 text-sm text-slate-400">
         Full lifecycle visibility across submission, review, and approvals.
@@ -28,7 +28,7 @@ export function RequestTimeline({ items }: RequestTimelineProps) {
               ) : null}
             </div>
 
-            <div className="flex-1 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="theme-surface flex-1 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-base font-semibold text-white">
                   {item.status}

@@ -2,9 +2,17 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Bell, LogOut, Settings, UserCircle2 } from "lucide-react";
+import {
+  Bell,
+  FileText,
+  Home,
+  LogOut,
+  Settings,
+  UserCircle2,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "@/components/branding/logo";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useAuth } from "@/context/auth-context";
 import { getDefaultRedirectForRole } from "@/lib/auth";
 
@@ -18,33 +26,34 @@ interface DashboardShellProps {
 interface NavItem {
   label: string;
   href: string;
+  icon: typeof Home;
 }
 
 function getNavItems(role?: string | null): NavItem[] {
   if (role === "citizen") {
     return [
-      { label: "Overview", href: "/citizen" },
-      { label: "Requests", href: "/citizen/request" },
-      { label: "Services", href: "/citizen/services" },
-      { label: "Notifications", href: "/citizen/notifications" },
-      { label: "Settings", href: "/citizen/settings" },
+      { label: "Overview", href: "/citizen", icon: Home },
+      { label: "Requests", href: "/citizen/request", icon: FileText },
+      { label: "Services", href: "/citizen/services", icon: FileText },
+      { label: "Notifications", href: "/citizen/notifications", icon: Bell },
+      { label: "Settings", href: "/citizen/settings", icon: Settings },
     ];
   }
 
   if (role === "municipality_admin" || role === "super_admin") {
     return [
-      { label: "Overview", href: "/employee" },
-      { label: "Priority Queue", href: "/employee/requests" },
-      { label: "Notifications", href: "/employee/notifications" },
-      { label: "Settings", href: "/employee/settings" },
+      { label: "Overview", href: "/employee", icon: Home },
+      { label: "Priority Queue", href: "/employee/requests", icon: FileText },
+      { label: "Notifications", href: "/employee/notifications", icon: Bell },
+      { label: "Settings", href: "/employee/settings", icon: Settings },
     ];
   }
 
   return [
-    { label: "Overview", href: "/employee" },
-    { label: "Requests", href: "/employee/requests" },
-    { label: "Notifications", href: "/employee/notifications" },
-    { label: "Settings", href: "/employee/settings" },
+    { label: "Overview", href: "/employee", icon: Home },
+    { label: "Requests", href: "/employee/requests", icon: FileText },
+    { label: "Notifications", href: "/employee/notifications", icon: Bell },
+    { label: "Settings", href: "/employee/settings", icon: Settings },
   ];
 }
 
@@ -76,18 +85,18 @@ export function DashboardShell({
   const homeHref = user ? getDefaultRedirectForRole(user.role) : "/";
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.18),transparent_26%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_24%),linear-gradient(180deg,#08101d_0%,#0a1323_40%,#0c1729_100%)] text-white">
+    <main className="min-h-screen bg-[#f6f8fb] text-slate-900">
       <div className="flex min-h-screen">
-        <aside className="hidden w-72 border-r border-white/10 bg-[#08101d]/80 px-6 py-6 backdrop-blur-xl lg:block">
+        <aside className="hidden w-72 border-r border-slate-200 bg-white px-5 py-6 lg:block">
           <Link href={homeHref}>
             <Logo />
           </Link>
 
-          <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-4">
-            <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+          <div className="mt-8 rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <div className="text-xs font-semibold uppercase text-slate-500">
               Workspace
             </div>
-            <div className="mt-2 text-lg font-semibold text-white">
+            <div className="mt-2 text-base font-semibold text-slate-950">
               {workspaceName}
             </div>
             <div className="mt-1 text-sm text-slate-400">
@@ -95,22 +104,24 @@ export function DashboardShell({
             </div>
           </div>
 
-          <nav className="mt-8 space-y-2">
+          <nav className="mt-8 space-y-1">
             {navItems.map((item) => {
               const isActive =
                 pathname === item.href ||
                 (item.href !== "/" && pathname.startsWith(`${item.href}/`));
+              const Icon = item.icon;
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`block rounded-2xl px-4 py-3 text-sm transition ${
+                  className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition ${
                     isActive
-                      ? "border border-white/10 bg-white/[0.08] font-semibold text-white"
-                      : "border border-transparent text-slate-300 hover:border-white/10 hover:bg-white/[0.04] hover:text-white"
+                      ? "bg-[#e8f2f8] font-semibold text-[#174767]"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
                   }`}
                 >
+                  <Icon className="h-4 w-4" />
                   {item.label}
                 </Link>
               );
@@ -119,18 +130,22 @@ export function DashboardShell({
         </aside>
 
         <div className="flex-1">
-          <header className="border-b border-white/10 bg-[#08101d]/70 backdrop-blur-xl">
-            <div className="container-shell flex items-center justify-between py-5">
+          <header className="border-b border-slate-200 bg-white">
+            <div className="container-shell flex flex-col gap-4 py-5 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <div className="text-sm text-slate-400">{roleLabel}</div>
-                <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+                <div className="text-xs font-semibold uppercase text-slate-500">
+                  {roleLabel}
+                </div>
+                <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
                   {title}
                 </h1>
                 <p className="mt-2 text-sm text-slate-400">{subtitle}</p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white">
+              <div className="flex flex-wrap items-center gap-2">
+                <ThemeToggle />
+
+                <button className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-950">
                   <Bell className="h-4 w-4" />
                 </button>
 
@@ -140,19 +155,19 @@ export function DashboardShell({
                       ? "/citizen/settings"
                       : "/employee/settings"
                   }
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
                 >
                   <Settings className="h-4 w-4" />
                 </Link>
 
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white">
+                <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700">
                   <UserCircle2 className="h-4 w-4" />
                   {user?.full_name || "Signed-in user"}
                 </div>
 
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+                  className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
                 >
                   <LogOut className="h-4 w-4" />
                   Log out

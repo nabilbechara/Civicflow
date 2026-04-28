@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ShieldCheck, Workflow, Building2 } from "lucide-react";
 import { Logo } from "@/components/branding/logo";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 interface AuthShellProps {
   eyebrow: string;
@@ -22,19 +23,20 @@ export function AuthShell({
   children,
 }: AuthShellProps) {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.18),transparent_26%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_24%),linear-gradient(180deg,#08101d_0%,#0a1323_40%,#0c1729_100%)] text-white">
-      <div className="container-shell grid min-h-screen items-center gap-8 py-10 lg:grid-cols-[1.1fr_0.9fr]">
-        <section className="glass-panel rounded-[32px] p-8 lg:p-10">
-          <div className="mb-8">
+    <main className="min-h-screen bg-[#f6f8fb] text-slate-900">
+      <div className="container-shell grid min-h-screen items-center gap-6 py-10 lg:grid-cols-[0.95fr_0.75fr]">
+        <section className="theme-surface rounded-lg border border-slate-200 bg-white p-8 shadow-sm lg:p-10">
+          <div className="mb-8 flex items-center justify-between gap-4">
             <Logo />
+            <ThemeToggle />
           </div>
 
           <div className="max-w-xl">
             <div className="badge-soft mb-4">{eyebrow}</div>
-            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
               {title}
             </h1>
-            <p className="mt-4 text-base leading-8 text-slate-300">
+            <p className="mt-4 text-base leading-8 text-slate-600">
               {description}
             </p>
           </div>
@@ -59,19 +61,21 @@ export function AuthShell({
             ].map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+                className="theme-surface rounded-lg border border-slate-200 bg-slate-50 p-4"
               >
-                <item.icon className="mb-3 h-5 w-5 text-blue-300" />
-                <div className="text-sm font-semibold">{item.title}</div>
-                <p className="mt-2 text-sm leading-6 text-slate-400">
+                <item.icon className="mb-3 h-5 w-5 text-[#1f5f8b]" />
+                <div className="text-sm font-semibold text-slate-950">
+                  {item.title}
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
                   {item.text}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="mt-10 rounded-3xl border border-white/10 bg-slate-950/30 p-5">
-            <div className="text-sm font-medium text-slate-300">
+          <div className="theme-surface mt-10 rounded-lg border border-slate-200 bg-slate-50 p-5">
+            <div className="text-sm font-semibold text-slate-700">
               Demo municipalities
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -82,7 +86,7 @@ export function AuthShell({
               ].map((item) => (
                 <div
                   key={item}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200"
+                  className="theme-surface rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
                 >
                   {item}
                 </div>
@@ -91,14 +95,14 @@ export function AuthShell({
           </div>
         </section>
 
-        <section className="glass-panel rounded-[32px] p-8 lg:p-10">
+        <section className="theme-surface rounded-lg border border-slate-200 bg-white p-8 shadow-sm lg:p-10">
           {children}
 
           <div className="mt-6 text-sm text-slate-400">
             {footerText}{" "}
             <a
               href={footerHref}
-              className="font-medium text-white transition hover:text-blue-300"
+              className="font-medium text-[#1f5f8b] transition hover:text-[#174767]"
             >
               {footerLinkText}
             </a>

@@ -116,7 +116,7 @@ export default function CitizenDashboardPage() {
             {requests.map((request) => (
               <div
                 key={request.id}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
@@ -155,7 +155,7 @@ export default function CitizenDashboardPage() {
             ))}
 
             {requests.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
+              <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-slate-400">
                 No requests found yet.
               </div>
             ) : null}
@@ -172,7 +172,7 @@ export default function CitizenDashboardPage() {
             {services.map((service) => (
               <div
                 key={service.id}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+                className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4"
               >
                 <div className="text-sm text-slate-400">{service.category}</div>
                 <div className="mt-1 text-base font-semibold">

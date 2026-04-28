@@ -10,7 +10,7 @@ export default function CitizenServicesPage() {
       title="Municipal Services Catalog"
       subtitle="Browse services, review estimated timelines, and start a new request."
     >
-      <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-5">
+      <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="text-lg font-semibold text-white">
@@ -36,7 +36,7 @@ export default function CitizenServicesPage() {
         {services.map((service) => (
           <div
             key={service.id}
-            className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6"
+            className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
