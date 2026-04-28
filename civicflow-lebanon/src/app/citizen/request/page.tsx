@@ -48,7 +48,7 @@ export default function CitizenRequestsPage() {
         {requests.map((request) => (
           <div
             key={request.id}
-            className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6"
+            className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6"
           >
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div>
@@ -90,7 +90,7 @@ export default function CitizenRequestsPage() {
         ))}
 
         {!error && requests.length === 0 ? (
-          <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-10 text-center">
+          <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-10 text-center">
             <FileText className="mx-auto h-10 w-10 text-slate-400" />
             <h2 className="mt-4 text-lg font-semibold text-white">
               No requests yet

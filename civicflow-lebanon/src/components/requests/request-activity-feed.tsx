@@ -16,7 +16,7 @@ export function RequestActivityFeed({
   items,
 }: RequestActivityFeedProps) {
   return (
-    <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
+    <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
       <h3 className="text-lg font-semibold text-white">{title}</h3>
       <p className="mt-1 text-sm text-slate-400">
         Communication, review notes, and workflow updates.
@@ -26,7 +26,7 @@ export function RequestActivityFeed({
         {items.map((item) => (
           <div
             key={item.id}
-            className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+            className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4"
           >
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>

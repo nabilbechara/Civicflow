@@ -90,7 +90,7 @@ export default function EmployeeReviewPage() {
         title="Request Review Workspace"
         subtitle="Validate documents, assess status, and move the request through the workflow."
       >
-        <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
+        <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
           <div className="text-xl font-semibold text-white">
             {error || "Request not found"}
           </div>
@@ -158,7 +158,7 @@ export default function EmployeeReviewPage() {
             assignedReviewer={request.assignedReviewer}
           />
 
-          <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
+          <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
             <h3 className="text-lg font-semibold text-white">Review actions</h3>
             <p className="mt-1 text-sm text-slate-400">
               {isAdmin
@@ -227,7 +227,7 @@ export default function EmployeeReviewPage() {
             </div>
           </div>
 
-          <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
+          <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-6">
             <h3 className="text-lg font-semibold text-white">
               Submitted documents
             </h3>
@@ -239,7 +239,7 @@ export default function EmployeeReviewPage() {
                     href={`${API_BASE_URL}/documents/${document.id}/download?token=${encodeURIComponent(token || "")}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200 transition hover:bg-white/[0.06]"
+                    className="theme-surface flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200 transition hover:bg-white/[0.06]"
                   >
                     <div>
                       <div className="font-medium text-white">

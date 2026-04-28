@@ -72,14 +72,14 @@ export default function RequestSubmittedPage() {
           ) : null}
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
+            <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
               <div className="text-sm text-slate-400">Reference number</div>
               <div className="mt-2 text-lg font-semibold text-white">
                 {request?.reference || "Loading..."}
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
+            <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
               <div className="text-sm text-slate-400">Current status</div>
               <div className="mt-2 inline-flex rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-200">
                 {request?.status || "Submitted"}
@@ -87,14 +87,14 @@ export default function RequestSubmittedPage() {
             </div>
           </div>
 
-          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
+          <div className="theme-surface mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
             <div className="text-sm text-slate-400">Request title</div>
             <div className="mt-2 text-base font-semibold text-white">
               {request?.title || "Loading request details..."}
             </div>
           </div>
 
-          <div className="mt-8 rounded-[24px] border border-white/10 bg-slate-950/30 p-5 text-left">
+          <div className="theme-surface mt-8 rounded-[24px] border border-white/10 bg-slate-950/30 p-5 text-left">
             <div className="flex items-start gap-3">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-blue-300">
                 <FileClock className="h-5 w-5" />

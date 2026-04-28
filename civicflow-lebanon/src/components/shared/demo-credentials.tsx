@@ -6,7 +6,7 @@ interface DemoCredentialsProps {
 
 export function DemoCredentials({ onSelectEmail }: DemoCredentialsProps) {
   return (
-    <div className="mt-6 rounded-3xl border border-white/10 bg-slate-950/30 p-4">
+    <div className="theme-surface mt-6 rounded-3xl border border-white/10 bg-slate-950/30 p-4">
       <div className="text-sm font-semibold text-white">
         Demo login accounts
       </div>
@@ -23,7 +23,7 @@ export function DemoCredentials({ onSelectEmail }: DemoCredentialsProps) {
               key={user.id}
               type="button"
               onClick={() => onSelectEmail?.(user.email)}
-              className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left transition hover:bg-white/[0.06]"
+              className="theme-surface w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left transition hover:bg-white/[0.06]"
             >
               <div className="text-sm font-medium text-white">
                 {user.fullName}

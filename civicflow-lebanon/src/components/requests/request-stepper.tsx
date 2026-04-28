@@ -5,7 +5,7 @@ interface RequestStepperProps {
 
 export function RequestStepper({ currentStep, steps }: RequestStepperProps) {
   return (
-    <div className="rounded-[24px] border border-white/10 bg-slate-950/30 p-5">
+    <div className="theme-surface rounded-[24px] border border-white/10 bg-slate-950/30 p-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         {steps.map((step, index) => {
           const stepNumber = index + 1;

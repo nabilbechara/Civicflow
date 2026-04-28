@@ -135,7 +135,7 @@ export default function NewRequestPage() {
                 Confirm the service you want to request.
               </p>
 
-              <div className="mt-6 rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+              <div className="theme-surface mt-6 rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
                 <div className="text-sm text-slate-400">
                   {selectedService?.category}
                 </div>
@@ -234,14 +234,14 @@ export default function NewRequestPage() {
               </p>
 
               <div className="mt-6 space-y-4">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                   <div className="text-sm text-slate-400">Service</div>
                   <div className="mt-1 text-base font-semibold text-white">
                     {selectedService?.title}
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                   <div className="text-sm text-slate-400">Applicant</div>
                   <div className="mt-1 text-base font-semibold text-white">
                     {fullName}
@@ -249,14 +249,14 @@ export default function NewRequestPage() {
                   <div className="mt-1 text-sm text-slate-400">{phone}</div>
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                   <div className="text-sm text-slate-400">Supporting notes</div>
                   <div className="mt-1 text-base text-white">
                     {notes || "No additional notes provided."}
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                   <div className="text-sm text-slate-400">
                     Uploaded documents
                   </div>
@@ -312,7 +312,7 @@ export default function NewRequestPage() {
             {requirements.map((requirement) => (
               <div
                 key={requirement}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200"
+                className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200"
               >
                 {requirement}
               </div>

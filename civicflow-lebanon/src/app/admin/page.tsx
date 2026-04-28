@@ -39,7 +39,7 @@ export default function AdminDashboardPage() {
           </p>
 
           <div className="mt-6 space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="text-sm text-slate-400">Active tenant</div>
               <div className="mt-1 text-lg font-semibold">
                 {tenants[0].name}
@@ -49,7 +49,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] p-4">
               <div className="text-sm text-slate-400">Workflow governance</div>
               <div className="mt-2 text-sm leading-7 text-slate-300">
                 Approval chains, document rules, review stages, and escalation
@@ -74,7 +74,7 @@ export default function AdminDashboardPage() {
             ].map((item) => (
               <div
                 key={item}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-slate-200"
+                className="theme-surface rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-slate-200"
               >
                 {item}
               </div>
