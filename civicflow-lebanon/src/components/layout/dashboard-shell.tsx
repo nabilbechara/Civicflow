@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   Bell,
   FileText,
@@ -12,9 +12,19 @@ import {
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "@/components/branding/logo";
+import { CitizenNotificationPopup } from "@/components/notifications/citizen-notification-popup";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useAuth } from "@/context/auth-context";
 import { getDefaultRedirectForRole } from "@/lib/auth";
+import {
+  buildCitizenNotifications,
+  getPopupSeenNotificationIds,
+  markNotificationsRead,
+  markPopupNotificationsSeen,
+  type AppNotification,
+} from "@/lib/notifications";
+import { getAllRequests } from "@/lib/request-api";
+import type { ServiceRequest } from "@/types";
 
 interface DashboardShellProps {
   title: string;
@@ -73,13 +83,58 @@ export function DashboardShell({
   const pathname = usePathname();
   const router = useRouter();
   const { user, signOut } = useAuth();
+  const [notificationRequests, setNotificationRequests] = useState<
+    ServiceRequest[]
+  >([]);
+  const [popupSeenIds, setPopupSeenIds] = useState<Set<string>>(new Set());
+  const [isPopupDismissed, setIsPopupDismissed] = useState(false);
 
   const navItems = getNavItems(user?.role);
   const workspaceName = getWorkspaceName(user?.role);
+  const citizenPopupNotifications = useMemo(() => {
+    if (user?.role !== "citizen" || isPopupDismissed) return [];
+
+    return buildCitizenNotifications(notificationRequests)
+      .filter((notification) => !popupSeenIds.has(notification.id))
+      .slice(0, 3);
+  }, [isPopupDismissed, notificationRequests, popupSeenIds, user?.role]);
+
+  useEffect(() => {
+    if (user?.role !== "citizen") return;
+
+    window.requestAnimationFrame(() => {
+      setPopupSeenIds(getPopupSeenNotificationIds(user.id));
+      setIsPopupDismissed(false);
+    });
+
+    getAllRequests()
+      .then(setNotificationRequests)
+      .catch(() => {
+        setNotificationRequests([]);
+      });
+  }, [user?.id, user?.role]);
 
   function handleLogout() {
     signOut();
     router.push("/login");
+  }
+
+  function markPopupSeen(notifications: AppNotification[]) {
+    markPopupNotificationsSeen(
+      user?.id,
+      notifications.map((notification) => notification.id),
+    );
+    setPopupSeenIds(getPopupSeenNotificationIds(user?.id));
+    setIsPopupDismissed(true);
+  }
+
+  function handlePopupClose() {
+    markPopupSeen(citizenPopupNotifications);
+  }
+
+  function handleOpenPopupNotification(notification: AppNotification) {
+    markNotificationsRead(user?.id, [notification.id]);
+    markPopupSeen([notification]);
   }
 
   const homeHref = user ? getDefaultRedirectForRole(user.role) : "/";
@@ -145,9 +200,16 @@ export function DashboardShell({
               <div className="flex flex-wrap items-center gap-2">
                 <ThemeToggle />
 
-                <button className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-950">
+                <Link
+                  href={
+                    user?.role === "citizen"
+                      ? "/citizen/notifications"
+                      : "/employee/notifications"
+                  }
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
+                >
                   <Bell className="h-4 w-4" />
-                </button>
+                </Link>
 
                 <Link
                   href={
@@ -179,6 +241,12 @@ export function DashboardShell({
           <section className="container-shell py-8">{children}</section>
         </div>
       </div>
+
+      <CitizenNotificationPopup
+        notifications={citizenPopupNotifications}
+        onClose={handlePopupClose}
+        onOpenNotification={handleOpenPopupNotification}
+      />
     </main>
   );
 }
