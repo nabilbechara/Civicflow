@@ -37,6 +37,8 @@ function normalizeSeedRequest(request: ServiceRequest): ServiceRequest {
       role: "Demo Data",
       time: request.updatedAt,
       message: request.summary,
+      status: request.status,
+      activityType: "status_update",
     },
   ];
 
@@ -150,15 +152,17 @@ export function createRequest(input: CreateRequestInput) {
       },
     ],
     activity: [
-      {
-        id: createId("activity"),
-        author: input.applicantName,
-        role: "Citizen",
-        time: now,
-        message:
-          input.notes.trim() ||
-          `Submitted a new ${service.title.toLowerCase()} request through the portal.`,
-      },
+        {
+          id: createId("activity"),
+          author: input.applicantName,
+          role: "Citizen",
+          time: now,
+          message:
+            input.notes.trim() ||
+            `Submitted a new ${service.title.toLowerCase()} request through the portal.`,
+          status: "Submitted",
+          activityType: "submission",
+        },
     ],
   };
 
@@ -216,6 +220,8 @@ export function updateRequestStatus({
           role,
           time: now,
           message: note,
+          status,
+          activityType: "status_update",
         },
       ],
     };

@@ -117,7 +117,7 @@ export function buildCitizenNotifications(
 }
 
 function getEmployeeTone(request: ServiceRequest): AppNotification["tone"] {
-  if (request.status === "Escalated" || request.priority === "High") {
+  if (request.isEscalated || request.status === "Escalated" || request.priority === "High") {
     return "urgent";
   }
   if (request.status === "Pending Documents") return "warning";
@@ -125,8 +125,8 @@ function getEmployeeTone(request: ServiceRequest): AppNotification["tone"] {
 }
 
 function getEmployeeTitle(request: ServiceRequest) {
-  if (request.status === "Escalated") {
-    return `Escalated request: ${request.reference}`;
+  if (request.isEscalated || request.status === "Escalated") {
+    return `Forwarded to admin: ${request.reference}`;
   }
   if (request.priority === "High") {
     return `High-priority request: ${request.reference}`;
@@ -138,11 +138,12 @@ export function buildEmployeeNotifications(
   requests: ServiceRequest[],
   isAdmin: boolean,
 ): AppNotification[] {
-  return requests
+  const requestNotifications = requests
     .filter((request) => {
       if (isAdmin) {
         return (
           request.status === "Escalated" ||
+          request.isEscalated ||
           request.priority === "High" ||
           request.status === "Pending Documents" ||
           request.status === "Submitted"
@@ -155,13 +156,57 @@ export function buildEmployeeNotifications(
     })
     .map((request) => ({
       id: `employee:${request.id}:${request.status}:${request.updatedAt}`,
-      audience: "employee",
+      audience: "employee" as const,
       title: getEmployeeTitle(request),
-      message: `${request.title} needs attention in ${request.department}.`,
-      meta: `${request.priority} priority • Updated ${request.updatedAt}`,
+      message:
+        isAdmin && request.isEscalated
+          ? `${request.title} was forwarded to admin review from ${request.department}.`
+          : `${request.title} needs attention in ${request.department}.`,
+      meta: `${request.priority} priority • Updated ${request.updatedAt}${
+        request.escalatedAt ? ` • Forwarded ${request.escalatedAt}` : ""
+      }`,
       href: `/employee/reviews/${request.id}`,
       createdAt: request.updatedAt,
       requestId: request.id,
       tone: getEmployeeTone(request),
     }));
+
+  if (!isAdmin) return requestNotifications;
+
+  const employeeActionNotifications = requests.flatMap((request) =>
+    (request.activity || [])
+      .filter((activity) => {
+        const role = activity.role.toLowerCase();
+        return (
+          role.includes("employee") ||
+          role.includes("admin") ||
+          role.includes("review")
+        );
+      })
+      .map((activity) => ({
+        id: `admin-action:${request.id}:${activity.id}:${activity.time}`,
+        audience: "employee" as const,
+        title: `${activity.author} updated ${request.reference}`,
+        message: activity.message,
+        meta: `${activity.role} • ${activity.status || request.status} • ${activity.time}`,
+        href: `/employee/reviews/${request.id}`,
+        createdAt: activity.time,
+        requestId: request.id,
+        tone:
+          activity.status === "Escalated"
+            ? ("urgent" as const)
+            : activity.status === "Pending Documents"
+              ? ("warning" as const)
+              : activity.status &&
+                  ["Department Approved", "Final Approval", "Completed"].includes(
+                    activity.status,
+                  )
+                ? ("success" as const)
+                : ("info" as const),
+      })),
+  );
+
+  return [...requestNotifications, ...employeeActionNotifications].sort((a, b) =>
+    b.createdAt.localeCompare(a.createdAt),
+  );
 }

@@ -27,6 +27,7 @@ from models import (
     User,
 )
 from seed_data import (
+    SERVICE_SEED_DATA,
     seed_request_activity,
     seed_request_documents,
     seed_requests,
@@ -61,6 +62,25 @@ def current_timestamp():
 def generate_request_reference(db: Session):
     count = db.query(ServiceRequest).count() + 1
     return f"BRT-2026-{count:05d}"
+
+
+def get_or_seed_service(service_id: str, db: Session):
+    service = db.query(Service).filter(Service.id == service_id).first()
+    if service:
+        return service
+
+    seed_service = next(
+        (item for item in SERVICE_SEED_DATA if item["id"] == service_id),
+        None,
+    )
+    if not seed_service:
+        return None
+
+    service = Service(**seed_service)
+    db.add(service)
+    db.commit()
+    db.refresh(service)
+    return service
 
 
 def serialize_user(user: User):
@@ -365,7 +385,7 @@ async def create_my_request(
     current_user: User = Depends(require_roles("citizen")),
     db: Session = Depends(get_db),
 ):
-    service = db.query(Service).filter(Service.id == service_id).first()
+    service = get_or_seed_service(service_id, db)
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
 
@@ -541,6 +561,11 @@ def seed_services_route(db: Session = Depends(get_db)):
     return seed_services(db)
 
 
+@app.get("/seed/services")
+def seed_services_route_get(db: Session = Depends(get_db)):
+    return seed_services(db)
+
+
 @app.get("/users")
 def get_users(db: Session = Depends(get_db)):
     return db.query(User).all()
@@ -558,7 +583,7 @@ def get_requests(db: Session = Depends(get_db)):
 
 @app.post("/requests")
 def create_request(payload: CreateRequestPayload, db: Session = Depends(get_db)):
-    service = db.query(Service).filter(Service.id == payload.service_id).first()
+    service = get_or_seed_service(payload.service_id, db)
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
 

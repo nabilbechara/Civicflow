@@ -47,6 +47,118 @@ SERVICE_SEED_DATA = [
         "description": "Submit a complaint related to construction or zoning.",
         "estimated_days": 5,
     },
+    {
+        "id": "service-4",
+        "tenant_id": "tenant-beirut",
+        "title": "Road Maintenance Request",
+        "category": "Public Works",
+        "description": "Report potholes, damaged sidewalks, or street repairs.",
+        "estimated_days": 7,
+    },
+    {
+        "id": "service-5",
+        "tenant_id": "tenant-beirut",
+        "title": "Streetlight Repair",
+        "category": "Public Works",
+        "description": "Request repair for broken or unsafe public lighting.",
+        "estimated_days": 4,
+    },
+    {
+        "id": "service-6",
+        "tenant_id": "tenant-beirut",
+        "title": "Waste Collection Issue",
+        "category": "Sanitation",
+        "description": "Report missed collection, overflowing bins, or dumping.",
+        "estimated_days": 2,
+    },
+    {
+        "id": "service-7",
+        "tenant_id": "tenant-beirut",
+        "title": "Tree Pruning Request",
+        "category": "Parks and Environment",
+        "description": "Request pruning for trees affecting roads or buildings.",
+        "estimated_days": 6,
+    },
+    {
+        "id": "service-8",
+        "tenant_id": "tenant-beirut",
+        "title": "Event Permit",
+        "category": "Licensing",
+        "description": "Apply to host a public event in municipal spaces.",
+        "estimated_days": 8,
+    },
+    {
+        "id": "service-9",
+        "tenant_id": "tenant-beirut",
+        "title": "Parking Obstruction Report",
+        "category": "Traffic and Parking",
+        "description": "Report blocked entrances, illegal parking, or obstructions.",
+        "estimated_days": 3,
+    },
+    {
+        "id": "service-10",
+        "tenant_id": "tenant-beirut",
+        "title": "Water Leak Report",
+        "category": "Infrastructure",
+        "description": "Report visible water leaks on streets or public property.",
+        "estimated_days": 2,
+    },
+    {
+        "id": "service-11",
+        "tenant_id": "tenant-beirut",
+        "title": "Sidewalk Occupancy Permit",
+        "category": "Licensing",
+        "description": "Request permission for temporary sidewalk or storefront use.",
+        "estimated_days": 9,
+    },
+    {
+        "id": "service-12",
+        "tenant_id": "tenant-beirut",
+        "title": "Public Garden Maintenance",
+        "category": "Parks and Environment",
+        "description": "Request maintenance for public gardens, benches, or play areas.",
+        "estimated_days": 6,
+    },
+    {
+        "id": "service-13",
+        "tenant_id": "tenant-beirut",
+        "title": "Municipal Tax Statement",
+        "category": "Finance",
+        "description": "Request an official statement for municipal taxes or fees.",
+        "estimated_days": 4,
+    },
+    {
+        "id": "service-14",
+        "tenant_id": "tenant-beirut",
+        "title": "Signage Permit",
+        "category": "Licensing",
+        "description": "Apply for approval to install commercial or directional signage.",
+        "estimated_days": 7,
+    },
+    {
+        "id": "service-15",
+        "tenant_id": "tenant-beirut",
+        "title": "Graffiti or Vandalism Report",
+        "category": "Public Safety",
+        "description": "Report graffiti, vandalism, or damage to public assets.",
+        "estimated_days": 5,
+    },
+    {
+        "id": "service-16",
+        "tenant_id": "tenant-beirut",
+        "title": "Drainage Blockage Report",
+        "category": "Infrastructure",
+        "description": "Report blocked storm drains or flooding-prone street sections.",
+        "estimated_days": 3,
+    },
+    {
+        "id": "service-17",
+        "tenant_id": "tenant-beirut",
+        "title": "Noise Complaint",
+        "category": "Public Safety",
+        "description": "Submit a complaint about recurring noise disturbances.",
+        "estimated_days": 4,
+    },
 ]
 
 USER_SEED_DATA = [
@@ -245,15 +357,23 @@ def seed_tenants(db):
 
 
 def seed_services(db):
-    existing_count = db.query(Service).count()
-    if existing_count > 0:
-        return {"message": "Services already seeded", "count": existing_count}
+    existing_ids = {service.id for service in db.query(Service).all()}
+    missing_services = [
+        Service(**service_data)
+        for service_data in SERVICE_SEED_DATA
+        if service_data["id"] not in existing_ids
+    ]
 
-    services = [Service(**service_data) for service_data in SERVICE_SEED_DATA]
-    db.add_all(services)
+    if not missing_services:
+        return {"message": "Services already seeded", "count": len(existing_ids)}
+
+    db.add_all(missing_services)
     db.commit()
 
-    return {"message": "Services seeded successfully", "count": len(services)}
+    return {
+        "message": "Missing services seeded successfully",
+        "count": len(missing_services),
+    }
 
 
 def seed_users(db):

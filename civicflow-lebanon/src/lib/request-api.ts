@@ -106,6 +106,8 @@ function mapRequestToFrontend(
     role: item.role,
     time: item.created_at,
     message: item.message,
+    status: item.status as ServiceRequest["status"],
+    activityType: item.activity_type,
   }));
 
   const mappedTimeline =
@@ -140,6 +142,8 @@ function mapRequestToFrontend(
     department: request.department,
     assignedReviewer: mapReviewerName(request.assigned_reviewer_id),
     summary: request.summary,
+    isEscalated: Boolean(request.is_escalated),
+    escalatedAt: request.escalated_at || null,
     applicantName: citizenProfile.applicantName,
     applicantPhone: citizenProfile.applicantPhone,
     notes: request.notes || "",

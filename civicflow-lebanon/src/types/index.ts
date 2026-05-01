@@ -64,6 +64,8 @@ export interface RequestActivityItem {
   role: string;
   time: string;
   message: string;
+  status?: RequestStatus;
+  activityType?: string;
 }
 
 export interface ServiceRequest {
@@ -79,6 +81,8 @@ export interface ServiceRequest {
   department: string;
   assignedReviewer?: string;
   summary: string;
+  isEscalated?: boolean;
+  escalatedAt?: string | null;
 
   applicantName?: string;
   applicantPhone?: string;
