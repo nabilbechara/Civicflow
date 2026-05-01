@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { NotificationList } from "@/components/notifications/notification-list";
 import { useAuth } from "@/context/auth-context";
-import { getAllRequests } from "@/lib/request-api";
+import { getAllRequests, getRequestById } from "@/lib/request-api";
 import {
   buildEmployeeNotifications,
   getReadNotificationIds,
@@ -12,6 +12,15 @@ import {
   type AppNotification,
 } from "@/lib/notifications";
 import type { ServiceRequest } from "@/types";
+
+function withTimeout<T>(promise: Promise<T>, fallback: T, timeoutMs = 2500) {
+  return Promise.race([
+    promise.catch(() => fallback),
+    new Promise<T>((resolve) => {
+      window.setTimeout(() => resolve(fallback), timeoutMs);
+    }),
+  ]);
+}
 
 export default function EmployeeNotificationsPage() {
   const { user } = useAuth();
@@ -28,13 +37,27 @@ export default function EmployeeNotificationsPage() {
     });
 
     getAllRequests()
-      .then(setRequests)
+      .then((results) => {
+        setRequests(results);
+
+        if (!isAdmin) return;
+
+        Promise.all(
+          results.map(async (request) => {
+            const detailed = await withTimeout(
+              getRequestById(request.id),
+              request,
+            );
+            return detailed || request;
+          }),
+        ).then(setRequests);
+      })
       .catch((err) => {
         setError(
           err instanceof Error ? err.message : "Failed to load notifications.",
         );
       });
-  }, [user?.id]);
+  }, [isAdmin, user?.id]);
 
   const notifications = useMemo(
     () => buildEmployeeNotifications(requests, isAdmin),
