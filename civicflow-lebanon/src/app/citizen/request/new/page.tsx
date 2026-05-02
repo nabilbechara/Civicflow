@@ -12,24 +12,6 @@ import { useAuth } from "@/context/auth-context";
 
 const steps = ["Service", "Details", "Documents", "Review"];
 
-const requirementsByService: Record<string, string[]> = {
-  "Residency Certificate": [
-    "National ID copy",
-    "Proof of residence",
-    "Recent utility bill",
-  ],
-  "Business Permit": [
-    "Commercial registration",
-    "Lease agreement",
-    "Owner ID copy",
-  ],
-  "Building Complaint": [
-    "Complaint statement",
-    "Photo evidence",
-    "Location details",
-  ],
-};
-
 export default function NewRequestPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,7 +27,7 @@ export default function NewRequestPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -55,10 +37,7 @@ export default function NewRequestPage() {
     }
   }, [user?.full_name]);
 
-  const requirements = requirementsByService[selectedService?.title || ""] || [
-    "Supporting document",
-    "Municipality-specific requirement",
-  ];
+  const requirements = selectedService?.requiredDocuments || [];
 
   function nextStep() {
     if (step === 2) {
@@ -102,9 +81,9 @@ export default function NewRequestPage() {
         applicantName: fullName.trim(),
         applicantPhone: phone.trim(),
         notes: notes.trim(),
-        files: files as any,
+        files,
         priority: "Medium",
-      } as any);
+      });
 
       router.push(`/citizen/request/submitted?id=${createdRequest.id}`);
     } catch (err) {
@@ -209,7 +188,7 @@ export default function NewRequestPage() {
 
               <div className="mt-6">
                 <UploadDropzone
-                  files={files as File[]}
+                  files={files}
                   onAddFiles={(newFiles) =>
                     setFiles((current) => [...current, ...newFiles])
                   }
@@ -262,7 +241,7 @@ export default function NewRequestPage() {
                   </div>
                   <div className="mt-3 text-base text-white">
                     {files.length > 0
-                      ? files.map((file: File) => file.name).join(", ")
+                      ? files.map((file) => file.name).join(", ")
                       : "No documents attached."}
                   </div>
                 </div>

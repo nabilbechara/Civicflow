@@ -42,8 +42,8 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(() => getStoredUser());
+  const [token, setToken] = useState<string | null>(() => getAccessToken());
   const [isLoading, setIsLoading] = useState(true);
 
   const signOut = useCallback(() => {
@@ -136,19 +136,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    const storedUser = getStoredUser();
-    const storedToken = getAccessToken();
+    const frameId = window.requestAnimationFrame(() => {
+      refreshMe()
+        .catch(() => undefined)
+        .finally(() => {
+          setIsLoading(false);
+        });
+    });
 
-    if (storedUser) setUser(storedUser);
-    if (storedToken) setToken(storedToken);
-
-    refreshMe()
-      .catch(() => {
-        signOut();
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
   }, [refreshMe, signOut]);
 
   const value = useMemo<AuthContextValue>(

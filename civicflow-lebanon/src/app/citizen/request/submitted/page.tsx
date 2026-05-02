@@ -18,10 +18,11 @@ export default function RequestSubmittedPage() {
     if (!requestId) return;
 
     let isMounted = true;
+    const currentRequestId = requestId;
 
     async function loadRequest() {
       try {
-        const result = await getRequestById(requestId);
+        const result = await getRequestById(currentRequestId);
         if (isMounted) {
           setRequest(result);
         }

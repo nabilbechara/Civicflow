@@ -1,38 +1,55 @@
-import { Bell, Globe2 } from "lucide-react";
+"use client";
+
+import { Bell, Globe2, LogOut } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Logo } from "@/components/branding/logo";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth-context";
+import { getDefaultRedirectForRole } from "@/lib/auth";
 
 export function Topbar() {
+  const router = useRouter();
+  const { user, signOut } = useAuth();
+  const dashboardHref = user ? getDefaultRedirectForRole(user.role) : "/login";
+
+  function handleLogout() {
+    signOut();
+    router.push("/");
+  }
+
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white">
       <div className="container-shell flex items-center justify-between py-4">
-        <Logo />
+        <Link href="/">
+          <Logo />
+        </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
           <a
             className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
-            href="#"
+            href="#news"
           >
-            How it works
+            News
           </a>
           <a
             className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
-            href="#"
+            href="#history"
           >
-            Services
+            History
           </a>
           <a
             className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
-            href="#"
+            href="#staff"
           >
-            Municipalities
+            Staff
           </a>
           <a
             className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
-            href="#"
+            href="#contact"
           >
-            Security
+            Contact
           </a>
         </nav>
 
@@ -47,13 +64,32 @@ export function Topbar() {
             <Bell className="h-4 w-4" />
           </button>
 
-          <a href="/login">
-            <Button variant="secondary">Log In</Button>
-          </a>
+          {user ? (
+            <>
+              <Link href={dashboardHref}>
+                <Button>Dashboard</Button>
+              </Link>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={handleLogout}
+                className="gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <a href="/login">
+                <Button variant="secondary">Log In</Button>
+              </a>
 
-          <a href="/sign-up">
-            <Button>Get Started</Button>
-          </a>
+              <a href="/sign-up">
+                <Button>Get Started</Button>
+              </a>
+            </>
+          )}
         </div>
       </div>
     </header>

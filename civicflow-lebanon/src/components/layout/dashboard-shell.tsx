@@ -6,16 +6,18 @@ import {
   Bell,
   FileText,
   Home,
+  Landmark,
   LogOut,
+  Newspaper,
   Settings,
   UserCircle2,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Logo } from "@/components/branding/logo";
+import { CitizenChatbot } from "@/components/chatbot/citizen-chatbot";
 import { CitizenNotificationPopup } from "@/components/notifications/citizen-notification-popup";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useAuth } from "@/context/auth-context";
-import { getDefaultRedirectForRole } from "@/lib/auth";
 import {
   buildCitizenNotifications,
   getPopupSeenNotificationIds,
@@ -42,7 +44,9 @@ interface NavItem {
 function getNavItems(role?: string | null): NavItem[] {
   if (role === "citizen") {
     return [
+      { label: "Public Home", href: "/", icon: Landmark },
       { label: "Overview", href: "/citizen", icon: Home },
+      { label: "News", href: "/citizen/news", icon: Newspaper },
       { label: "Requests", href: "/citizen/request", icon: FileText },
       { label: "Services", href: "/citizen/services", icon: FileText },
       { label: "Notifications", href: "/citizen/notifications", icon: Bell },
@@ -52,7 +56,9 @@ function getNavItems(role?: string | null): NavItem[] {
 
   if (role === "municipality_admin" || role === "super_admin") {
     return [
+      { label: "Public Home", href: "/", icon: Landmark },
       { label: "Overview", href: "/employee", icon: Home },
+      { label: "Manage News", href: "/admin/news", icon: Newspaper },
       { label: "Priority Queue", href: "/employee/requests", icon: FileText },
       { label: "Notifications", href: "/employee/notifications", icon: Bell },
       { label: "Settings", href: "/employee/settings", icon: Settings },
@@ -60,6 +66,7 @@ function getNavItems(role?: string | null): NavItem[] {
   }
 
   return [
+    { label: "Public Home", href: "/", icon: Landmark },
     { label: "Overview", href: "/employee", icon: Home },
     { label: "Requests", href: "/employee/requests", icon: FileText },
     { label: "Notifications", href: "/employee/notifications", icon: Bell },
@@ -137,13 +144,11 @@ export function DashboardShell({
     markPopupSeen([notification]);
   }
 
-  const homeHref = user ? getDefaultRedirectForRole(user.role) : "/";
-
   return (
     <main className="min-h-screen bg-[#f6f8fb] text-slate-900">
       <div className="flex min-h-screen">
         <aside className="hidden w-72 border-r border-slate-200 bg-white px-5 py-6 lg:block">
-          <Link href={homeHref}>
+          <Link href="/">
             <Logo />
           </Link>
 
@@ -247,6 +252,7 @@ export function DashboardShell({
         onClose={handlePopupClose}
         onOpenNotification={handleOpenPopupNotification}
       />
+      {user ? <CitizenChatbot /> : null}
     </main>
   );
 }

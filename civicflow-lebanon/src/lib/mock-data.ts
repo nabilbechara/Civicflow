@@ -1,4 +1,4 @@
-import { Service, ServiceRequest, Tenant, User } from "@/types";
+import { NewsItem, Service, ServiceRequest, Tenant, User } from "@/types";
 
 export const tenants: Tenant[] = [
   {
@@ -64,6 +64,11 @@ export const services: Service[] = [
     category: "Civil Records",
     description: "Issue an official municipal residency certificate.",
     estimatedDays: 3,
+    requiredDocuments: [
+      "Copy of national ID or passport",
+      "Proof of current residence, such as a utility bill or rental statement",
+      "Mukhtar residence confirmation when requested by the municipality",
+    ],
   },
   {
     id: "service-2",
@@ -72,6 +77,12 @@ export const services: Service[] = [
     category: "Licensing",
     description: "Apply for a new municipal business permit.",
     estimatedDays: 10,
+    requiredDocuments: [
+      "Commercial registration or business declaration",
+      "Lease agreement or property ownership document",
+      "Owner or manager national ID copy",
+      "Location photos or storefront sketch when applicable",
+    ],
   },
   {
     id: "service-3",
@@ -80,6 +91,12 @@ export const services: Service[] = [
     category: "Urban Management",
     description: "Submit a complaint related to construction or zoning.",
     estimatedDays: 5,
+    requiredDocuments: [
+      "Written complaint describing the issue",
+      "Clear photos or videos of the building concern",
+      "Exact location, floor, street, or parcel details",
+      "Any previous notices or correspondence if available",
+    ],
   },
   {
     id: "service-4",
@@ -88,6 +105,11 @@ export const services: Service[] = [
     category: "Public Works",
     description: "Report potholes, damaged sidewalks, or street repairs.",
     estimatedDays: 7,
+    requiredDocuments: [
+      "Photo of the damaged road or sidewalk",
+      "Exact street name and nearest landmark",
+      "Short description of the hazard or access problem",
+    ],
   },
   {
     id: "service-5",
@@ -96,6 +118,11 @@ export const services: Service[] = [
     category: "Public Works",
     description: "Request repair for broken or unsafe public lighting.",
     estimatedDays: 4,
+    requiredDocuments: [
+      "Photo of the affected pole or streetlight if safe to capture",
+      "Pole number or nearest building/landmark",
+      "Description of the lighting problem",
+    ],
   },
   {
     id: "service-6",
@@ -104,6 +131,11 @@ export const services: Service[] = [
     category: "Sanitation",
     description: "Report missed collection, overflowing bins, or dumping.",
     estimatedDays: 2,
+    requiredDocuments: [
+      "Photo of the waste issue",
+      "Exact location and nearest landmark",
+      "Date and time the issue was noticed",
+    ],
   },
   {
     id: "service-7",
@@ -112,6 +144,11 @@ export const services: Service[] = [
     category: "Parks and Environment",
     description: "Request pruning for trees affecting roads or buildings.",
     estimatedDays: 6,
+    requiredDocuments: [
+      "Photo of the tree and affected area",
+      "Location details and nearest landmark",
+      "Explanation of the risk, obstruction, or damage",
+    ],
   },
   {
     id: "service-8",
@@ -120,6 +157,12 @@ export const services: Service[] = [
     category: "Licensing",
     description: "Apply to host a public event in municipal spaces.",
     estimatedDays: 8,
+    requiredDocuments: [
+      "Event proposal with date, time, and expected attendance",
+      "Organizer national ID copy",
+      "Site plan or requested public space details",
+      "Safety, cleanup, or traffic plan for larger events",
+    ],
   },
   {
     id: "service-9",
@@ -128,6 +171,11 @@ export const services: Service[] = [
     category: "Traffic and Parking",
     description: "Report blocked entrances, illegal parking, or obstructions.",
     estimatedDays: 3,
+    requiredDocuments: [
+      "Photo of the obstruction or blocked entrance",
+      "Vehicle plate number when visible and appropriate",
+      "Exact location and time of incident",
+    ],
   },
   {
     id: "service-10",
@@ -136,6 +184,11 @@ export const services: Service[] = [
     category: "Infrastructure",
     description: "Report visible water leaks on streets or public property.",
     estimatedDays: 2,
+    requiredDocuments: [
+      "Photo or video of the leak",
+      "Exact street location and nearest landmark",
+      "Description of water flow severity and duration",
+    ],
   },
   {
     id: "service-11",
@@ -144,6 +197,12 @@ export const services: Service[] = [
     category: "Licensing",
     description: "Request permission for temporary sidewalk or storefront use.",
     estimatedDays: 9,
+    requiredDocuments: [
+      "Applicant national ID copy",
+      "Business registration or storefront proof",
+      "Sketch showing requested sidewalk area",
+      "Photos of the sidewalk and frontage",
+    ],
   },
   {
     id: "service-12",
@@ -152,6 +211,11 @@ export const services: Service[] = [
     category: "Parks and Environment",
     description: "Request maintenance for public gardens, benches, or play areas.",
     estimatedDays: 6,
+    requiredDocuments: [
+      "Photo of the garden, bench, or play area issue",
+      "Garden name or exact location",
+      "Short description of the required maintenance",
+    ],
   },
   {
     id: "service-13",
@@ -160,6 +224,11 @@ export const services: Service[] = [
     category: "Finance",
     description: "Request an official statement for municipal taxes or fees.",
     estimatedDays: 4,
+    requiredDocuments: [
+      "Property or account reference number if available",
+      "Applicant national ID copy",
+      "Proof of ownership, occupancy, or authorization",
+    ],
   },
   {
     id: "service-14",
@@ -168,6 +237,12 @@ export const services: Service[] = [
     category: "Licensing",
     description: "Apply for approval to install commercial or directional signage.",
     estimatedDays: 7,
+    requiredDocuments: [
+      "Business registration or authorization letter",
+      "Sign design with dimensions",
+      "Photo of proposed installation location",
+      "Owner approval if the sign is on private property",
+    ],
   },
   {
     id: "service-15",
@@ -176,6 +251,11 @@ export const services: Service[] = [
     category: "Public Safety",
     description: "Report graffiti, vandalism, or damage to public assets.",
     estimatedDays: 5,
+    requiredDocuments: [
+      "Photo of the damage or graffiti",
+      "Exact location and nearest landmark",
+      "Date noticed and any available incident details",
+    ],
   },
   {
     id: "service-16",
@@ -184,6 +264,11 @@ export const services: Service[] = [
     category: "Infrastructure",
     description: "Report blocked storm drains or flooding-prone street sections.",
     estimatedDays: 3,
+    requiredDocuments: [
+      "Photo of the blocked drain or flooded area",
+      "Exact street location",
+      "Description of flooding frequency or recent incident",
+    ],
   },
   {
     id: "service-17",
@@ -192,6 +277,51 @@ export const services: Service[] = [
     category: "Public Safety",
     description: "Submit a complaint about recurring noise disturbances.",
     estimatedDays: 4,
+    requiredDocuments: [
+      "Written complaint with dates and times",
+      "Location and source of noise",
+      "Audio/video evidence if available and legally captured",
+      "Contact details for follow-up",
+    ],
+  },
+];
+
+export const defaultNewsItems: NewsItem[] = [
+  {
+    id: "news-1",
+    title: "Road rehabilitation begins in the old souk district",
+    date: "May 2026",
+    category: "Public Works",
+    image:
+      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80",
+    summary:
+      "Municipal crews started resurfacing key streets, improving pedestrian crossings, and upgrading drainage before the summer season.",
+    body: "The public works department is coordinating road resurfacing, safer pedestrian crossings, and drainage improvements across the old souk district. Residents should expect temporary detours during morning work hours.",
+    createdAt: "2026-05-01T08:00:00.000Z",
+  },
+  {
+    id: "news-2",
+    title: "New digital request desk opens for residents",
+    date: "April 2026",
+    category: "Citizen Services",
+    image:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=80",
+    summary:
+      "Residents can now submit documents, follow requests, and receive status notifications directly through CivicFlow Lebanon.",
+    body: "The municipality launched a digital request desk to reduce paperwork and help citizens track service progress from submission to completion.",
+    createdAt: "2026-04-20T08:00:00.000Z",
+  },
+  {
+    id: "news-3",
+    title: "Youth volunteers join spring cleanup campaign",
+    date: "March 2026",
+    category: "Community",
+    image:
+      "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=1200&q=80",
+    summary:
+      "Schools and civic groups partnered with the municipality to clean public gardens and repaint neighborhood gathering spaces.",
+    body: "Local students, neighborhood committees, and municipal staff worked together to clean public gardens, repaint benches, and restore shared spaces ahead of spring events.",
+    createdAt: "2026-03-28T08:00:00.000Z",
   },
 ];
 

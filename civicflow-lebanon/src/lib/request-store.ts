@@ -115,12 +115,12 @@ export function createRequest(input: CreateRequestInput) {
   const currentRequests = readRequests();
   const now = createTimestamp();
 
-  const documents: RequestDocument[] = input.files.map((fileName) => ({
+  const documents: RequestDocument[] = input.files.map((file) => ({
     id: createId("doc"),
-    name: fileName,
+    name: file.name,
     uploadedAt: now,
-    sizeLabel: "Demo file",
-    mimeType: "application/pdf",
+    sizeLabel: `${Math.max(1, Math.round(file.size / 1024))} KB`,
+    mimeType: file.type || "application/octet-stream",
   }));
 
   const created: ServiceRequest = {
