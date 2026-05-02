@@ -185,6 +185,23 @@ def sanitize_filename(filename: str) -> str:
     return safe[:120] or "document"
 
 
+def validate_strong_password(password: str):
+    checks = [
+        (len(password) >= 8, "at least 8 characters"),
+        (re.search(r"[A-Z]", password), "one uppercase letter"),
+        (re.search(r"[a-z]", password), "one lowercase letter"),
+        (re.search(r"\d", password), "one number"),
+        (re.search(r"[^A-Za-z0-9]", password), "one special character"),
+    ]
+    missing = [label for passed, label in checks if not passed]
+
+    if missing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Password must include {', '.join(missing)}",
+        )
+
+
 def resolve_document_path(document: RequestDocument) -> Path:
     return UPLOADS_DIR / f"{document.id}__{sanitize_filename(document.file_name)}"
 
@@ -279,8 +296,7 @@ def register(payload: RegisterPayload, db: Session = Depends(get_db)):
     if not tenant:
         raise HTTPException(status_code=404, detail="Municipality not found")
 
-    if len(payload.password) < 8:
-        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+    validate_strong_password(payload.password)
 
     new_user = User(
         id=f"user-{int(datetime.now().timestamp() * 1000)}",

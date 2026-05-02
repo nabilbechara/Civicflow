@@ -1,4 +1,5 @@
 import { serviceRequests, services } from "@/lib/mock-data";
+import { notifyRequestsUpdated } from "@/lib/request-api";
 import type {
   CreateRequestInput,
   RequestActivityItem,
@@ -168,6 +169,7 @@ export function createRequest(input: CreateRequestInput) {
 
   const updated = [created, ...currentRequests];
   writeRequests(updated);
+  notifyRequestsUpdated();
 
   return created;
 }
@@ -231,5 +233,6 @@ export function updateRequestStatus({
   });
 
   writeRequests(updatedRequests);
+  notifyRequestsUpdated();
   return updatedRequest;
 }
