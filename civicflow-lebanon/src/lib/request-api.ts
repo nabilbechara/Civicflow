@@ -1,4 +1,5 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const REQUESTS_UPDATED_EVENT = "civicflow-requests-updated";
 
 import { getAccessToken, clearSession, getStoredUser } from "@/lib/auth";
 import { services } from "@/lib/mock-data";
@@ -9,6 +10,15 @@ import type {
   RequestTimelineItem,
   ServiceRequest,
 } from "@/types";
+
+export function notifyRequestsUpdated() {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(REQUESTS_UPDATED_EVENT));
+}
+
+export function getRequestsUpdatedEventName() {
+  return REQUESTS_UPDATED_EVENT;
+}
 
 interface BackendRequest {
   id: string;
@@ -216,11 +226,14 @@ export async function createRequest(
 
   const data = (await response.json()) as BackendCreateRequestResponse;
 
-  return mapRequestToFrontend(
+  const createdRequest = mapRequestToFrontend(
     data.request,
     data.activity ? [data.activity] : [],
     data.documents || [],
   );
+
+  notifyRequestsUpdated();
+  return createdRequest;
 }
 
 export async function getRequestById(
@@ -333,5 +346,6 @@ export async function updateRequestStatus({
     throw new Error("Request was updated but could not be reloaded");
   }
 
+  notifyRequestsUpdated();
   return refreshed;
 }

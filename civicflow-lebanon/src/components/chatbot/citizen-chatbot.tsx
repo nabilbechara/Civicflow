@@ -1,10 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Bot, MessageCircle, Send, X } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { getNewsItems } from "@/lib/news-store";
-import { getAllRequests } from "@/lib/request-api";
+import { getAllRequests, getRequestsUpdatedEventName } from "@/lib/request-api";
 import { services } from "@/lib/mock-data";
 import type { NewsItem, Service, ServiceRequest } from "@/types";
 
@@ -87,6 +87,39 @@ function answerRequestDocuments(request: ServiceRequest) {
   )}`;
 }
 
+function isNotApprovedRequest(request: ServiceRequest) {
+  return [
+    "Submitted",
+    "Under Review",
+    "Pending Documents",
+    "Escalated",
+  ].includes(request.status);
+}
+
+function answerNotApprovedRequests(
+  requests: ServiceRequest[],
+  canViewAllRequests: boolean,
+) {
+  const pendingRequests = requests.filter(isNotApprovedRequest);
+
+  if (pendingRequests.length === 0) {
+    return canViewAllRequests
+      ? "There are no visible requests waiting for approval right now."
+      : "You do not have any requests waiting for approval right now.";
+  }
+
+  return `${
+    canViewAllRequests
+      ? "These requests have not been approved yet"
+      : "Your requests that have not been approved yet"
+  }:\n${formatList(
+    pendingRequests.map(
+      (request) =>
+        `${request.reference}: ${request.title} is ${request.status} in ${request.department}`,
+    ),
+  )}`;
+}
+
 function buildAnswer(
   question: string,
   requests: ServiceRequest[],
@@ -109,9 +142,19 @@ function buildAnswer(
   );
   const asksAll =
     /\b(all|list|available|catalog|types|what can)\b/.test(normalizedQuestion);
+  const asksNotApproved =
+    /\b(not approved|unapproved|not accepted|not completed|pending approval|waiting for approval|haven't been approved|have not been approved)\b/.test(
+      normalizedQuestion,
+    ) ||
+    (/\b(request|requests)\b/.test(normalizedQuestion) &&
+      /\b(pending|waiting|open|unfinished)\b/.test(normalizedQuestion));
 
   if (asksNews) {
     return answerNewsQuestion(newsItems);
+  }
+
+  if (asksNotApproved) {
+    return answerNotApprovedRequests(requests, canViewAllRequests);
   }
 
   if (asksServices && asksAll && !findService(question)) {
@@ -183,37 +226,56 @@ export function CitizenChatbot() {
     user?.role === "municipality_admin" ||
     user?.role === "super_admin";
 
+  const refreshRequests = useCallback(async () => {
+    try {
+      const latestRequests = await getAllRequests();
+      setRequests(latestRequests);
+      return latestRequests;
+    } catch {
+      setRequests([]);
+      return [];
+    }
+  }, []);
+
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
       setNewsItems(getNewsItems());
-      getAllRequests()
-        .then(setRequests)
-        .catch(() => setRequests([]));
+      refreshRequests();
     });
 
     function handleNewsUpdated() {
       setNewsItems(getNewsItems());
     }
 
+    function handleRequestsUpdated() {
+      refreshRequests();
+    }
+
     window.addEventListener("civicflow-news-updated", handleNewsUpdated);
+    window.addEventListener(getRequestsUpdatedEventName(), handleRequestsUpdated);
     window.addEventListener("storage", handleNewsUpdated);
 
     return () => {
       window.cancelAnimationFrame(frameId);
       window.removeEventListener("civicflow-news-updated", handleNewsUpdated);
+      window.removeEventListener(
+        getRequestsUpdatedEventName(),
+        handleRequestsUpdated,
+      );
       window.removeEventListener("storage", handleNewsUpdated);
     };
-  }, []);
+  }, [refreshRequests]);
 
   const unreadLabel = useMemo(
     () => (requests.length ? `${requests.length} request records loaded` : "Ask me anything"),
     [requests.length],
   );
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const question = input.trim();
     if (!question) return;
+    const latestRequests = await refreshRequests();
 
     const userMessage: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -223,7 +285,12 @@ export function CitizenChatbot() {
     const assistantMessage: ChatMessage = {
       id: `assistant-${Date.now()}`,
       role: "assistant",
-      text: buildAnswer(question, requests, newsItems, canViewAllRequests),
+      text: buildAnswer(
+        question,
+        latestRequests,
+        newsItems,
+        canViewAllRequests,
+      ),
     };
 
     setMessages((currentMessages) => [
