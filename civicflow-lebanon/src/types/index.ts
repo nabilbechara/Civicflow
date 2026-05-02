@@ -40,6 +40,18 @@ export interface Service {
   category: string;
   description: string;
   estimatedDays: number;
+  requiredDocuments: string[];
+}
+
+export interface NewsItem {
+  id: string;
+  title: string;
+  date: string;
+  category: string;
+  image: string;
+  summary: string;
+  body: string;
+  createdAt: string;
 }
 
 export interface RequestDocument {
@@ -48,6 +60,7 @@ export interface RequestDocument {
   uploadedAt: string;
   sizeLabel?: string;
   mimeType?: string;
+  downloadPath?: string;
 }
 
 export interface RequestTimelineItem {
@@ -99,6 +112,6 @@ export interface CreateRequestInput {
   applicantName: string;
   applicantPhone: string;
   notes: string;
-  files: string[];
+  files: File[];
   priority?: RequestPriority;
 }

@@ -1,217 +1,204 @@
-import { Building2, ShieldCheck, Workflow, ArrowRight } from "lucide-react";
+import { CalendarDays, Landmark, Mail, MapPin, Phone, Users } from "lucide-react";
+import { HomeHeroActions } from "@/components/home/home-hero-actions";
 import { Topbar } from "@/components/layout/topbar";
-import { StatusBadge } from "@/components/shared/status-badge";
-import { serviceRequests, services, tenants } from "@/lib/mock-data";
+import { NewsSlider } from "@/components/news/news-slider";
+
+const historyMilestones = [
+  {
+    year: "1898",
+    title: "First local council",
+    copy: "The earliest elected council organized public records, market supervision, and basic street maintenance.",
+  },
+  {
+    year: "1952",
+    title: "Modern municipality charter",
+    copy: "The municipality expanded its administrative role as residential neighborhoods, schools, and public utilities grew.",
+  },
+  {
+    year: "2026",
+    title: "Digital civic services",
+    copy: "CivicFlow connects residents, employees, and municipal leadership through one transparent service platform.",
+  },
+];
+
+const staff = [
+  {
+    name: "Maya Khoury",
+    role: "Citizen Services Officer",
+    email: "maya.khoury@municipality.gov.lb",
+    phone: "+961 1 555 201",
+    initials: "MK",
+  },
+  {
+    name: "Karim Haddad",
+    role: "Public Works Coordinator",
+    email: "karim.haddad@municipality.gov.lb",
+    phone: "+961 1 555 214",
+    initials: "KH",
+  },
+  {
+    name: "Rana Mansour",
+    role: "Municipal Records Manager",
+    email: "rana.mansour@municipality.gov.lb",
+    phone: "+961 1 555 228",
+    initials: "RM",
+  },
+];
 
 export default function HomePage() {
   return (
     <main>
       <Topbar />
 
-      <section className="container-shell pt-8 sm:pt-10 lg:pt-12">
-        <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div>
-              <div className="badge-soft mb-4">Civic SaaS for Lebanon</div>
+      <section className="bg-white">
+        <div className="container-shell grid gap-10 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-14">
+          <div>
+            <div className="badge-soft mb-4">Municipal life, made clearer</div>
+            <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+              Your municipality, its news, services, and people in one place.
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+              CivicFlow Lebanon gives residents a public window into municipal
+              updates while keeping digital services, documents, and request
+              tracking close at hand.
+            </p>
 
-              <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-                Trusted digital municipality services for citizens, staff, and
-                municipal leadership.
-              </h1>
-
-              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-                CivicFlow Lebanon modernizes municipal workflows with a
-                multi-tenant platform for citizen requests, internal approvals,
-                document handling, role-based access, and transparent service
-                delivery.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a
-                  href="/login"
-                  className="theme-primary-button inline-flex items-center rounded-md bg-[#1f5f8b] px-5 py-3 text-sm font-semibold text-[#ffffff] transition hover:bg-[#174767]"
-                >
-                  Log In
-                </a>
-
-                <a
-                  href="/sign-up"
-                  className="inline-flex items-center rounded-md border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-50"
-                >
-                  Create Account
-                </a>
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
-              <div className="text-sm text-slate-400">Live tenant snapshot</div>
-              <div className="mt-2 text-2xl font-semibold text-slate-950">
-                {tenants[0].name}
-              </div>
-              <div className="mt-1 text-sm text-slate-400">
-                Region: {tenants[0].region}
-              </div>
-
-              <div className="mt-6 space-y-3">
-                {[
-                  "Tenant-isolated municipal workspace",
-                  "Citizen portal and staff operations in one platform",
-                  "Approval chains, status history, and document management",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="theme-surface rounded-md border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <HomeHeroActions />
           </div>
 
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
-            {[
-              {
-                icon: Building2,
-                title: "Municipality tenants",
-                value: `${tenants.length}`,
-                copy: "Independent municipal tenants with isolated data and services.",
-              },
-              {
-                icon: Workflow,
-                title: "Workflow states",
-                value: "9",
-                copy: "Structured lifecycle from submission to approval, escalation, or completion.",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Access model",
-                value: "RBAC",
-                copy: "Separate experiences for citizens, employees, admins, and platform operators.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="theme-surface rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
-              >
-                <item.icon className="mb-4 h-5 w-5 text-[#1f5f8b]" />
-                <div className="text-2xl font-semibold text-slate-950">
-                  {item.value}
-                </div>
-                <div className="mt-2 text-sm font-medium text-slate-950">
-                  {item.title}
-                </div>
-                <p className="mt-2 text-sm leading-6 text-slate-400">
-                  {item.copy}
-                </p>
-              </div>
-            ))}
+          <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-950 shadow-sm">
+            <img
+              src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1400&q=80"
+              alt="Municipal buildings and public streets"
+              className="h-[360px] w-full object-cover opacity-90 sm:h-[460px]"
+            />
           </div>
         </div>
       </section>
 
-      <section className="container-shell py-12 sm:py-14">
-        <div className="mb-8">
-          <span className="badge-soft">Request transparency</span>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-            Real request tracking and service visibility
-          </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Citizens can follow request progress clearly while municipalities
-            manage structured processing, approvals, and service performance.
-          </p>
-        </div>
+      <NewsSlider />
 
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="glass-panel rounded-lg p-6">
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-semibold text-slate-950">
-                  Recent service requests
-                </h3>
-                <p className="mt-1 text-sm text-slate-400">
-                  Lifecycle visibility across departments and review stages.
-                </p>
-              </div>
+      <section id="history" className="bg-white py-12 sm:py-14">
+        <div className="container-shell">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+            <div>
+              <span className="badge-soft">
+                <Landmark className="mr-2 h-4 w-4" />
+                Municipality history
+              </span>
+              <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                How local government grew with the community
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
+                This section can be customized for each municipality with its
+                founding story, early council records, major public projects,
+                and the people who helped shape it.
+              </p>
             </div>
 
-            <div className="space-y-4">
-              {serviceRequests.map((request) => (
+            <div className="grid gap-4 md:grid-cols-3">
+              {historyMilestones.map((milestone) => (
                 <div
-                  key={request.id}
-                  className="theme-surface rounded-lg border border-slate-200 bg-white p-4"
+                  key={milestone.year}
+                  className="theme-surface rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
                 >
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <div className="text-sm text-slate-400">
-                        {request.reference}
-                      </div>
-                      <h4 className="mt-1 text-base font-semibold text-slate-950">
-                        {request.title}
-                      </h4>
-                      <p className="mt-2 text-sm leading-6 text-slate-400">
-                        {request.summary}
-                      </p>
-                    </div>
-
-                    <StatusBadge status={request.status} />
+                  <div className="text-sm font-semibold text-[#1f5f8b]">
+                    {milestone.year}
                   </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-400">
-                    <span className="rounded-md bg-slate-100 px-3 py-1">
-                      Department: {request.department}
-                    </span>
-                    <span className="rounded-md bg-slate-100 px-3 py-1">
-                      Updated: {request.updatedAt}
-                    </span>
-                    <span className="rounded-md bg-slate-100 px-3 py-1">
-                      Priority: {request.priority}
-                    </span>
-                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-slate-950">
+                    {milestone.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {milestone.copy}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="glass-panel rounded-lg p-6">
-            <h3 className="text-xl font-semibold text-slate-950">
-              Popular municipal services
-            </h3>
-            <p className="mt-1 text-sm text-slate-400">
-              Tenant-specific services can later be configured per municipality.
-            </p>
+      <section id="staff" className="container-shell py-12 sm:py-14">
+        <div className="mb-8">
+          <span className="badge-soft">
+            <Users className="mr-2 h-4 w-4" />
+            Municipal staff
+          </span>
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+            Meet the people residents contact most
+          </h2>
+        </div>
 
-            <div className="mt-6 space-y-4">
-              {services.map((service) => (
-                <div
-                  key={service.id}
-                  className="theme-surface rounded-lg border border-slate-200 bg-white p-4"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="text-sm text-slate-400">
-                        {service.category}
-                      </div>
-                      <div className="mt-1 text-base font-semibold text-slate-950">
-                        {service.title}
-                      </div>
-                    </div>
-
-                    <div className="rounded-md bg-[#e8f2f8] px-3 py-1 text-xs font-medium text-[#1f5f8b]">
-                      {service.estimatedDays} days
-                    </div>
-                  </div>
-
-                  <p className="mt-3 text-sm leading-6 text-slate-400">
-                    {service.description}
-                  </p>
-
-                  <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-[#1f5f8b]">
-                    Request service <ArrowRight className="h-4 w-4" />
-                  </div>
+        <div className="grid gap-5 lg:grid-cols-3">
+          {staff.map((member) => (
+            <article
+              key={member.email}
+              className="theme-surface rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-[#e8f2f8] text-lg font-semibold text-[#1f5f8b]">
+                  {member.initials}
                 </div>
-              ))}
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-950">
+                    {member.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-500">{member.role}</p>
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-3 text-sm text-slate-600">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-[#1f5f8b]" />
+                  <span>{member.email}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-[#1f5f8b]" />
+                  <span>{member.phone}</span>
+                </div>
+              </div>
+
+              <a
+                href={`mailto:${member.email}`}
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#1f5f8b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#174767]"
+              >
+                Contact me <Mail className="h-4 w-4" />
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="contact" className="bg-[#174767] py-12 text-white sm:py-14">
+        <div className="container-shell grid gap-6 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+          <div>
+            <div className="text-sm font-semibold uppercase text-blue-100">
+              Visit or contact the municipality
             </div>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+              Need help with a service request?
+            </h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-blue-50 sm:text-base">
+              Residents can contact staff directly, visit during opening hours,
+              or log in to follow requests and upload required documents.
+            </p>
+          </div>
+
+          <div className="grid gap-3 text-sm text-blue-50">
+            <div className="flex items-center gap-3">
+              <MapPin className="h-5 w-5" />
+              Main municipal building, Lebanon
+            </div>
+            <div className="flex items-center gap-3">
+              <CalendarDays className="h-5 w-5" />
+              Monday to Friday, 8:00 AM - 2:00 PM
+            </div>
+            <a
+              href="mailto:info@municipality.gov.lb"
+              className="inline-flex w-fit items-center gap-2 rounded-md bg-white px-5 py-3 font-semibold text-[#174767] transition hover:bg-blue-50"
+            >
+              Email the municipality <Mail className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </section>

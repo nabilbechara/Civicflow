@@ -4,7 +4,9 @@ import { getAccessToken, clearSession, getStoredUser } from "@/lib/auth";
 import { services } from "@/lib/mock-data";
 import type {
   CreateRequestInput,
+  RequestDocument,
   RequestStatus,
+  RequestTimelineItem,
   ServiceRequest,
 } from "@/types";
 
@@ -110,11 +112,11 @@ function mapRequestToFrontend(
     activityType: item.activity_type,
   }));
 
-  const mappedTimeline =
+  const mappedTimeline: RequestTimelineItem[] =
     activity.length > 0
       ? activity.map((item) => ({
           id: `timeline-${item.id}`,
-          status: item.status || request.status,
+          status: (item.status || request.status) as RequestStatus,
           actor: item.author_name,
           timestamp: item.created_at,
           note: item.message,
@@ -122,7 +124,7 @@ function mapRequestToFrontend(
       : [
           {
             id: `timeline-${request.id}`,
-            status: request.status,
+            status: request.status as RequestStatus,
             actor: mapReviewerName(request.assigned_reviewer_id),
             timestamp: request.updated_at,
             note: request.summary,
@@ -147,14 +149,14 @@ function mapRequestToFrontend(
     applicantName: citizenProfile.applicantName,
     applicantPhone: citizenProfile.applicantPhone,
     notes: request.notes || "",
-    documents: documents.map((doc) => ({
+    documents: documents.map<RequestDocument>((doc) => ({
       id: doc.id,
       name: doc.file_name,
       uploadedAt: doc.uploaded_at,
       sizeLabel: doc.size_label || "Unknown",
       mimeType: doc.mime_type || "application/octet-stream",
       downloadPath: doc.download_path || undefined,
-    })) as any,
+    })),
     timeline: mappedTimeline,
     activity: mappedActivity,
   };
@@ -198,10 +200,8 @@ export async function createRequest(
   );
   formData.append("notes", input.notes);
 
-  (input.files as any[]).forEach((file) => {
-    if (file instanceof File) {
-      formData.append("files", file);
-    }
+  input.files.forEach((file) => {
+    formData.append("files", file);
   });
 
   const response = await fetchWithAuth(`${API_BASE_URL}/me/requests`, {

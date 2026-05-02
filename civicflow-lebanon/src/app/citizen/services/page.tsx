@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, FileCheck2, Search } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { services } from "@/lib/mock-data";
 
@@ -55,6 +55,23 @@ export default function CitizenServicesPage() {
               {service.description}
             </p>
 
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+                <FileCheck2 className="h-4 w-4 text-blue-200" />
+                Required documents
+              </div>
+              <div className="mt-3 space-y-2">
+                {service.requiredDocuments.slice(0, 3).map((document) => (
+                  <div
+                    key={document}
+                    className="text-sm leading-6 text-slate-400"
+                  >
+                    {document}
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href={`/citizen/request/new?service=${service.id}`}
@@ -63,9 +80,12 @@ export default function CitizenServicesPage() {
                 Start Request <ArrowRight className="h-4 w-4" />
               </Link>
 
-              <button className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10">
-                View Requirements
-              </button>
+              <Link
+                href={`/citizen/request/new?service=${service.id}`}
+                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                View All Requirements
+              </Link>
             </div>
           </div>
         ))}
