@@ -302,9 +302,9 @@ export function CitizenChatbot() {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className="fixed inset-x-4 bottom-4 z-50 sm:inset-x-auto sm:right-5 sm:bottom-5">
       {isOpen ? (
-        <div className="flex h-[560px] w-[min(380px,calc(100vw-40px))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex h-[min(560px,calc(100vh-32px))] w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl sm:w-[min(380px,calc(100vw-40px))]">
           <div className="flex items-center justify-between bg-[#174767] px-4 py-3 text-white">
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5" />
@@ -328,8 +328,8 @@ export function CitizenChatbot() {
                 key={message.id}
                 className={`whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 ${
                   message.role === "user"
-                    ? "ml-8 bg-[#1f5f8b] text-white"
-                    : "mr-8 border border-slate-200 bg-white text-slate-700"
+                    ? "ml-4 bg-[#1f5f8b] text-white sm:ml-8"
+                    : "mr-4 border border-slate-200 bg-white text-slate-700 sm:mr-8"
                 }`}
               >
                 {message.text}
@@ -356,7 +356,7 @@ export function CitizenChatbot() {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 rounded-full bg-[#1f5f8b] px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#174767]"
+          className="ml-auto flex w-fit items-center gap-2 rounded-full bg-[#1f5f8b] px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-[#174767]"
         >
           <MessageCircle className="h-5 w-5" />
           Ask CivicFlow

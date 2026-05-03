@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <section className="glass-panel mt-8 rounded-[24px] p-6">
+      <section className="glass-panel mt-8 rounded-[24px] p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-xl font-semibold">Municipality users</h2>
@@ -42,8 +42,8 @@ export default function AdminUsersPage() {
           </button>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-2xl border border-white/10">
-          <div className="grid grid-cols-[1.2fr_1fr_0.9fr_0.8fr] bg-white/5 px-4 py-3 text-xs font-semibold uppercase text-slate-400">
+        <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+          <div className="grid min-w-[760px] grid-cols-[1.2fr_1fr_0.9fr_0.8fr] bg-white/5 px-4 py-3 text-xs font-semibold uppercase text-slate-400">
             <div>Name</div>
             <div>Email</div>
             <div>Role</div>
@@ -53,7 +53,7 @@ export default function AdminUsersPage() {
           {demoUsers.map((user) => (
             <div
               key={user.id}
-              className="grid grid-cols-[1.2fr_1fr_0.9fr_0.8fr] items-center border-t border-white/10 px-4 py-4 text-sm"
+              className="grid min-w-[760px] grid-cols-[1.2fr_1fr_0.9fr_0.8fr] items-center border-t border-white/10 px-4 py-4 text-sm"
             >
               <div className="font-semibold text-white">{user.fullName}</div>
               <div className="flex items-center gap-2 text-slate-300">

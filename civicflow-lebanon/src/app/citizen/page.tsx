@@ -91,9 +91,9 @@ export default function CitizenDashboardPage() {
         />
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="glass-panel rounded-[24px] p-6">
-          <div className="flex items-center justify-between gap-4">
+      <div className="mt-6 grid gap-6 lg:mt-8 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="glass-panel rounded-[24px] p-4 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold">My recent requests</h2>
               <p className="mt-1 text-sm text-slate-400">
@@ -165,7 +165,7 @@ export default function CitizenDashboardPage() {
           </div>
         </div>
 
-        <div className="glass-panel rounded-[24px] p-6">
+        <div className="glass-panel rounded-[24px] p-4 sm:p-6">
           <h2 className="text-xl font-semibold">Popular services</h2>
           <p className="mt-1 text-sm text-slate-400">
             Start a new request from your municipality service catalog.
