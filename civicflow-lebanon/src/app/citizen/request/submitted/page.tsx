@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, FileClock, ArrowRight } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { getRequestById } from "@/lib/request-api";
 import type { ServiceRequest } from "@/types";
 
-export default function RequestSubmittedPage() {
+export const dynamic = "force-dynamic";
+
+function RequestSubmittedContent() {
   const searchParams = useSearchParams();
   const requestId = searchParams.get("id");
   const [request, setRequest] = useState<ServiceRequest | null>(null);
@@ -133,5 +135,25 @@ export default function RequestSubmittedPage() {
         </div>
       </div>
     </DashboardShell>
+  );
+}
+
+export default function RequestSubmittedPage() {
+  return (
+    <Suspense
+      fallback={
+        <DashboardShell
+          roleLabel="Citizen Portal"
+          title="Request Submitted Successfully"
+          subtitle="Loading submitted request..."
+        >
+          <div className="glass-panel rounded-[24px] p-6 text-sm text-slate-400">
+            Loading confirmation details.
+          </div>
+        </DashboardShell>
+      }
+    >
+      <RequestSubmittedContent />
+    </Suspense>
   );
 }

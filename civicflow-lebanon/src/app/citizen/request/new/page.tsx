@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,9 @@ import { useAuth } from "@/context/auth-context";
 
 const steps = ["Service", "Details", "Documents", "Review"];
 
-export default function NewRequestPage() {
+export const dynamic = "force-dynamic";
+
+function NewRequestContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
@@ -305,5 +307,25 @@ export default function NewRequestPage() {
         </div>
       </div>
     </DashboardShell>
+  );
+}
+
+export default function NewRequestPage() {
+  return (
+    <Suspense
+      fallback={
+        <DashboardShell
+          roleLabel="Citizen Portal"
+          title="New Service Request"
+          subtitle="Loading request wizard..."
+        >
+          <div className="glass-panel rounded-[24px] p-6 text-sm text-slate-400">
+            Preparing the request form.
+          </div>
+        </DashboardShell>
+      }
+    >
+      <NewRequestContent />
+    </Suspense>
   );
 }
