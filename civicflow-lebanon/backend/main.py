@@ -576,6 +576,11 @@ def seed_tenants_route(db: Session = Depends(get_db)):
     return seed_tenants(db)
 
 
+@app.get("/seed/tenants")
+def seed_tenants_route_get(db: Session = Depends(get_db)):
+    return seed_tenants(db)
+
+
 @app.get("/services")
 def get_services(db: Session = Depends(get_db)):
     return db.query(Service).all()
@@ -598,6 +603,11 @@ def get_users(db: Session = Depends(get_db)):
 
 @app.post("/seed/users")
 def seed_users_route(db: Session = Depends(get_db)):
+    return seed_users(db)
+
+
+@app.get("/seed/users")
+def seed_users_route_get(db: Session = Depends(get_db)):
     return seed_users(db)
 
 
@@ -687,6 +697,11 @@ def seed_requests_route(db: Session = Depends(get_db)):
     return seed_requests(db)
 
 
+@app.get("/seed/requests")
+def seed_requests_route_get(db: Session = Depends(get_db)):
+    return seed_requests(db)
+
+
 @app.get("/request-activity")
 def get_request_activity(db: Session = Depends(get_db)):
     return db.query(RequestActivity).all()
@@ -694,6 +709,11 @@ def get_request_activity(db: Session = Depends(get_db)):
 
 @app.post("/seed/request-activity")
 def seed_request_activity_route(db: Session = Depends(get_db)):
+    return seed_request_activity(db)
+
+
+@app.get("/seed/request-activity")
+def seed_request_activity_route_get(db: Session = Depends(get_db)):
     return seed_request_activity(db)
 
 
@@ -705,6 +725,23 @@ def get_request_documents(db: Session = Depends(get_db)):
 @app.post("/seed/request-documents")
 def seed_request_documents_route(db: Session = Depends(get_db)):
     return seed_request_documents(db)
+
+
+@app.get("/seed/request-documents")
+def seed_request_documents_route_get(db: Session = Depends(get_db)):
+    return seed_request_documents(db)
+
+
+@app.get("/seed/all")
+def seed_all_route(db: Session = Depends(get_db)):
+    return {
+        "tenants": seed_tenants(db),
+        "services": seed_services(db),
+        "users": seed_users(db),
+        "requests": seed_requests(db),
+        "request_activity": seed_request_activity(db),
+        "request_documents": seed_request_documents(db),
+    }
 
 
 @app.get("/requests/{request_id}")
