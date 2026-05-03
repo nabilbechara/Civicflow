@@ -8,11 +8,14 @@ import { MetricCard } from "@/components/dashboards/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { getAllRequests } from "@/lib/request-api";
 import { services } from "@/lib/mock-data";
+import { useAuth } from "@/context/auth-context";
 import type { ServiceRequest } from "@/types";
 
 export default function CitizenDashboardPage() {
+  const { user } = useAuth();
   const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [error, setError] = useState("");
+  const displayName = user?.full_name?.trim() || "there";
 
   useEffect(() => {
     let isMounted = true;
@@ -64,7 +67,7 @@ export default function CitizenDashboardPage() {
   return (
     <DashboardShell
       roleLabel="Citizen Portal"
-      title="Welcome back, Maya Haddad"
+      title={`Welcome back, ${displayName}`}
       subtitle="Track requests, browse services, and manage your municipal documents."
     >
       <div className="grid gap-4 md:grid-cols-3">
