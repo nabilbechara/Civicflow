@@ -8,8 +8,10 @@ import {
   Home,
   Landmark,
   LogOut,
+  Menu,
   Newspaper,
   Settings,
+  X,
   UserCircle2,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -95,6 +97,7 @@ export function DashboardShell({
   >([]);
   const [popupSeenIds, setPopupSeenIds] = useState<Set<string>>(new Set());
   const [isPopupDismissed, setIsPopupDismissed] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   const navItems = getNavItems(user?.role);
   const workspaceName = getWorkspaceName(user?.role);
@@ -124,6 +127,10 @@ export function DashboardShell({
   function handleLogout() {
     signOut();
     router.push("/login");
+  }
+
+  function closeMobileNav() {
+    setIsMobileNavOpen(false);
   }
 
   function markPopupSeen(notifications: AppNotification[]) {
@@ -191,15 +198,32 @@ export function DashboardShell({
 
         <div className="flex-1">
           <header className="border-b border-slate-200 bg-white">
-            <div className="container-shell flex flex-col gap-4 py-5 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="text-xs font-semibold uppercase text-slate-500">
-                  {roleLabel}
+            <div className="container-shell flex flex-col gap-4 py-4 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold uppercase text-slate-500">
+                    {roleLabel}
+                  </div>
+                  <h1 className="mt-1 text-balance text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                    {title}
+                  </h1>
+                  <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
+                    {subtitle}
+                  </p>
                 </div>
-                <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                  {title}
-                </h1>
-                <p className="mt-2 text-sm text-slate-400">{subtitle}</p>
+
+                <button
+                  type="button"
+                  onClick={() => setIsMobileNavOpen((isOpen) => !isOpen)}
+                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 lg:hidden"
+                  aria-label="Toggle navigation"
+                >
+                  {isMobileNavOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
+                </button>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -228,22 +252,52 @@ export function DashboardShell({
                 </Link>
 
                 <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700">
-                  <UserCircle2 className="h-4 w-4" />
-                  {user?.full_name || "Signed-in user"}
+                  <UserCircle2 className="h-4 w-4 shrink-0" />
+                  <span className="max-w-[11rem] truncate sm:max-w-none">
+                    {user?.full_name || "Signed-in user"}
+                  </span>
                 </div>
 
                 <button
                   onClick={handleLogout}
                   className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
                 >
-                  <LogOut className="h-4 w-4" />
-                  Log out
+                  <LogOut className="h-4 w-4 shrink-0" />
+                  <span>Log out</span>
                 </button>
               </div>
+
+              {isMobileNavOpen ? (
+                <nav className="grid gap-1 rounded-lg border border-slate-200 bg-slate-50 p-2 lg:hidden">
+                  {navItems.map((item) => {
+                    const isActive =
+                      pathname === item.href ||
+                      (item.href !== "/" &&
+                        pathname.startsWith(`${item.href}/`));
+                    const Icon = item.icon;
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={closeMobileNav}
+                        className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition ${
+                          isActive
+                            ? "bg-white font-semibold text-[#174767] shadow-sm"
+                            : "text-slate-600 hover:bg-white hover:text-slate-950"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </nav>
+              ) : null}
             </div>
           </header>
 
-          <section className="container-shell py-8">{children}</section>
+          <section className="container-shell py-5 sm:py-8">{children}</section>
         </div>
       </div>
 

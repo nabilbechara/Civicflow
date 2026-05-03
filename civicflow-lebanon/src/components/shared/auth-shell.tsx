@@ -24,8 +24,8 @@ export function AuthShell({
 }: AuthShellProps) {
   return (
     <main className="min-h-screen bg-[#f6f8fb] text-slate-900">
-      <div className="container-shell grid min-h-screen items-center gap-6 py-10 lg:grid-cols-[0.95fr_0.75fr]">
-        <section className="theme-surface rounded-lg border border-slate-200 bg-white p-8 shadow-sm lg:p-10">
+      <div className="container-shell grid min-h-screen items-center gap-5 py-5 sm:gap-6 sm:py-10 lg:grid-cols-[0.95fr_0.75fr]">
+        <section className="theme-surface rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
           <div className="mb-8 flex items-center justify-between gap-4">
             <Logo />
             <ThemeToggle />
@@ -33,7 +33,7 @@ export function AuthShell({
 
           <div className="max-w-xl">
             <div className="badge-soft mb-4">{eyebrow}</div>
-            <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
               {title}
             </h1>
             <p className="mt-4 text-base leading-8 text-slate-600">
@@ -95,7 +95,7 @@ export function AuthShell({
           </div>
         </section>
 
-        <section className="theme-surface rounded-lg border border-slate-200 bg-white p-8 shadow-sm lg:p-10">
+        <section className="theme-surface rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:p-8 lg:p-10">
           {children}
 
           <div className="mt-6 text-sm text-slate-400">
