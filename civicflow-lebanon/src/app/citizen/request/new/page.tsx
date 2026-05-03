@@ -12,6 +12,8 @@ import { useAuth } from "@/context/auth-context";
 
 const steps = ["Service", "Details", "Documents", "Review"];
 
+export const dynamic = "force-dynamic";
+
 function NewRequestContent() {
   const router = useRouter();
   const searchParams = useSearchParams();

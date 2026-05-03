@@ -8,6 +8,8 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { getRequestById } from "@/lib/request-api";
 import type { ServiceRequest } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 function RequestSubmittedContent() {
   const searchParams = useSearchParams();
   const requestId = searchParams.get("id");
