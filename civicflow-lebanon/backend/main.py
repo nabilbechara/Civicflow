@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from pathlib import Path
 import re
 
@@ -38,12 +39,20 @@ from seed_data import (
 
 app = FastAPI(title="CivicFlow API")
 
+DEFAULT_FRONTEND_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+FRONTEND_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("FRONTEND_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=DEFAULT_FRONTEND_ORIGINS + FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
