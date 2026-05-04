@@ -11,7 +11,7 @@ import { RequestActivityFeed } from "@/components/requests/request-activity-feed
 import { getRequestById, updateRequestStatus } from "@/lib/request-api";
 import { getAccessToken } from "@/lib/auth";
 import { useAuth } from "@/context/auth-context";
-import type { RequestStatus, ServiceRequest } from "@/types";
+import type { RequestDocument, RequestStatus, ServiceRequest } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
@@ -233,7 +233,7 @@ export default function EmployeeReviewPage() {
             </h3>
             <div className="mt-4 space-y-2">
               {request.documents && request.documents.length > 0 ? (
-                request.documents.map((document: any) => (
+                request.documents.map((document: RequestDocument) => (
                   <a
                     key={document.id}
                     href={`${API_BASE_URL}/documents/${document.id}/download?token=${encodeURIComponent(token || "")}`}

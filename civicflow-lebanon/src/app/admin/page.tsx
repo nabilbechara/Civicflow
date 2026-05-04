@@ -1,9 +1,48 @@
-import { Users, Building2, BarChart3 } from "lucide-react";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { Users, BadgeCheck, Clock3 } from "lucide-react";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { MetricCard } from "@/components/dashboards/metric-card";
-import { tenants, services } from "@/lib/mock-data";
+import { getAllRequests } from "@/lib/request-api";
+import { summarizeRequestMetrics } from "@/lib/request-metrics";
+import { tenants } from "@/lib/mock-data";
+import type { ServiceRequest } from "@/types";
 
 export default function AdminDashboardPage() {
+  const [requests, setRequests] = useState<ServiceRequest[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadRequests() {
+      try {
+        const results = await getAllRequests();
+        if (isMounted) {
+          setRequests(results);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(
+            err instanceof Error ? err.message : "Failed to load requests.",
+          );
+        }
+      }
+    }
+
+    loadRequests();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const metrics = useMemo(
+    () => summarizeRequestMetrics(requests),
+    [requests],
+  );
+
   return (
     <DashboardShell
       roleLabel="Municipality Admin Dashboard"
@@ -12,24 +51,30 @@ export default function AdminDashboardPage() {
     >
       <div className="grid gap-4 md:grid-cols-3">
         <MetricCard
-          label="Employees"
-          value="42"
-          change="6 department managers"
+          label="All requests"
+          value={String(metrics.total)}
+          change="Requests visible to this admin"
           icon={<Users className="h-5 w-5" />}
         />
         <MetricCard
-          label="Configured services"
-          value={`${services.length}`}
-          change="Service catalog active"
-          icon={<Building2 className="h-5 w-5" />}
+          label="Pending requests"
+          value={String(metrics.pending)}
+          change="Submitted, review, pending docs, or escalated"
+          icon={<Clock3 className="h-5 w-5" />}
         />
         <MetricCard
-          label="SLA compliance"
-          value="94%"
-          change="+3.2% this month"
-          icon={<BarChart3 className="h-5 w-5" />}
+          label="Accepted requests"
+          value={String(metrics.approved)}
+          change="Department approved, final approval, or completed"
+          icon={<BadgeCheck className="h-5 w-5" />}
         />
       </div>
+
+      {error ? (
+        <div className="mt-8 rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          {error}
+        </div>
+      ) : null}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div className="glass-panel rounded-[24px] p-6">

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, LoaderCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthShell } from "@/components/shared/auth-shell";
 import { useAuth } from "@/context/auth-context";
@@ -212,7 +212,14 @@ export default function SignUpPage() {
             type="submit"
             disabled={loading || !isPasswordStrong || !doPasswordsMatch}
           >
-            {loading ? "Creating account..." : "Create Account"}
+            {loading ? (
+              <>
+                <LoaderCircle className="h-4 w-4 animate-spin text-current" />
+                Creating account...
+              </>
+            ) : (
+              "Create Account"
+            )}
           </Button>
         </form>
 

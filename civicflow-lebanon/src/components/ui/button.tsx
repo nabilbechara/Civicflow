@@ -23,7 +23,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center rounded-md px-5 py-3 text-sm font-semibold transition-all duration-200",
+        "inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-all duration-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1f5f8b]/30",
         "disabled:pointer-events-none disabled:opacity-50",
         variants[variant],
