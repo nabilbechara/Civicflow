@@ -90,11 +90,11 @@ export default function LoginPage() {
             <select
               value={municipality}
               onChange={(event) => setMunicipality(event.target.value)}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400/40 focus:bg-white/[0.07]"
+              className="auth-select w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400/40 focus:bg-white/[0.07]"
             >
-              <option className="bg-slate-900">Beirut Municipality</option>
-              <option className="bg-slate-900">Jounieh Municipality</option>
-              <option className="bg-slate-900">Zahle Municipality</option>
+              <option>Beirut Municipality</option>
+              <option>Jounieh Municipality</option>
+              <option>Zahle Municipality</option>
             </select>
           </div>
 
@@ -125,7 +125,7 @@ export default function LoginPage() {
           >
             {loading ? (
               <>
-                <LoaderCircle className="h-4 w-4 animate-spin text-current" />
+                <LoaderCircle className="auth-button-spinner h-4 w-4 animate-spin" />
                 Signing in...
               </>
             ) : (

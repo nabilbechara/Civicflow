@@ -28,10 +28,7 @@ export function middleware(request: NextRequest) {
   const isLoginRoute = pathname === "/login" || pathname === "/admin-login";
 
   if ((isCitizenRoute || isEmployeeRoute) && !token) {
-    const loginUrl = new URL(
-      isEmployeeRoute ? "/admin-login" : "/login",
-      request.url,
-    );
+    const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
