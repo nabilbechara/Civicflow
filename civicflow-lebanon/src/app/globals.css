@@ -74,6 +74,15 @@ body {
   border-color: var(--border);
 }
 
+.auth-select option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.auth-button-spinner {
+  color: #ffffff;
+}
+
 .badge-soft {
   display: inline-flex;
   align-items: center;
@@ -214,6 +223,15 @@ body {
 .theme-dark .theme-surface {
   background: rgba(255, 255, 255, 0.03) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.theme-dark .auth-select option {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.theme-dark .theme-primary-button .auth-button-spinner {
+  color: #020617;
 }
 
 .theme-dark .badge-soft {
