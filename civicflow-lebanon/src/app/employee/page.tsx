@@ -14,6 +14,7 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { MetricCard } from "@/components/dashboards/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { getAllRequests } from "@/lib/request-api";
+import { isApprovedRequest, isPendingRequest } from "@/lib/request-metrics";
 import { useAuth } from "@/context/auth-context";
 import type { ServiceRequest } from "@/types";
 
@@ -69,25 +70,18 @@ export default function EmployeeDashboardPage() {
   }, []);
 
   const metrics = useMemo(() => {
-    const inQueue = requests.filter((request) =>
-      ["Submitted", "Under Review", "Pending Documents", "Escalated"].includes(
-        request.status,
-      ),
-    ).length;
+    const total = requests.length;
+    const pending = requests.filter(isPendingRequest).length;
 
     const escalations = requests.filter(
       (request) => request.status === "Escalated",
     ).length;
 
-    const approved = requests.filter((request) =>
-      ["Department Approved", "Final Approval", "Completed"].includes(
-        request.status,
-      ),
-    ).length;
+    const approved = requests.filter(isApprovedRequest).length;
 
     const priorityQueue = requests.filter(isPriorityQueueItem).length;
 
-    return { inQueue, escalations, approved, priorityQueue };
+    return { total, pending, escalations, approved, priorityQueue };
   }, [requests]);
 
   const priorityRequests = useMemo(
@@ -123,15 +117,15 @@ export default function EmployeeDashboardPage() {
     <DashboardShell roleLabel={roleLabel} title={title} subtitle={subtitle}>
       <div className="grid gap-4 md:grid-cols-4">
         <MetricCard
-          label="Requests in queue"
-          value={String(metrics.inQueue)}
-          change="Live backend workload"
+          label="All requests"
+          value={String(metrics.total)}
+          change="Live backend workload for your scope"
           icon={<Inbox className="h-5 w-5" />}
         />
         <MetricCard
-          label="Priority queue"
-          value={String(metrics.priorityQueue)}
-          change="Escalated, high-priority, and pending docs"
+          label="Pending requests"
+          value={String(metrics.pending)}
+          change="Submitted, review, pending docs, or escalated"
           icon={<ShieldAlert className="h-5 w-5" />}
         />
         <MetricCard
@@ -141,9 +135,9 @@ export default function EmployeeDashboardPage() {
           icon={<AlertTriangle className="h-5 w-5" />}
         />
         <MetricCard
-          label="Approved / closed"
+          label="Accepted requests"
           value={String(metrics.approved)}
-          change="Department output so far"
+          change="Department approved, final approval, or completed"
           icon={<BadgeCheck className="h-5 w-5" />}
         />
       </div>

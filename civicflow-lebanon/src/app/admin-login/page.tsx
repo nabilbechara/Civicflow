@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthShell } from "@/components/shared/auth-shell";
 import { getDefaultRedirectForRole } from "@/lib/auth";
@@ -113,7 +114,14 @@ export default function AdminLoginPage() {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Signing in..." : "Access Workspace"}
+            {loading ? (
+              <>
+                <LoaderCircle className="h-4 w-4 animate-spin text-current" />
+                Signing in...
+              </>
+            ) : (
+              "Access Workspace"
+            )}
           </Button>
         </form>
 

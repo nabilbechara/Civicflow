@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthShell } from "@/components/shared/auth-shell";
 import { DemoCredentials } from "@/components/shared/demo-credentials";
@@ -122,7 +123,14 @@ export default function LoginPage() {
             type="submit"
             disabled={loading}
           >
-            {loading ? "Signing in..." : "Log In"}
+            {loading ? (
+              <>
+                <LoaderCircle className="h-4 w-4 animate-spin text-current" />
+                Signing in...
+              </>
+            ) : (
+              "Log In"
+            )}
           </Button>
         </form>
 

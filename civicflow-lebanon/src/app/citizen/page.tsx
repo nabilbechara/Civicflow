@@ -7,6 +7,11 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { MetricCard } from "@/components/dashboards/metric-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { getAllRequests } from "@/lib/request-api";
+import {
+  isApprovedRequest,
+  isPendingRequest,
+  summarizeRequestMetrics,
+} from "@/lib/request-metrics";
 import { services } from "@/lib/mock-data";
 import { useAuth } from "@/context/auth-context";
 import type { ServiceRequest } from "@/types";
@@ -43,25 +48,16 @@ export default function CitizenDashboardPage() {
   }, []);
 
   const metrics = useMemo(() => {
-    const active = requests.filter((request) =>
-      [
-        "Submitted",
-        "Under Review",
-        "Pending Documents",
-        "Escalated",
-        "Department Approved",
-      ].includes(request.status),
-    ).length;
+    const summary = summarizeRequestMetrics(requests);
+    const active = requests.filter(isPendingRequest).length;
 
     const pending = requests.filter(
       (request) => request.status === "Pending Documents",
     ).length;
 
-    const completed = requests.filter((request) =>
-      ["Final Approval", "Completed"].includes(request.status),
-    ).length;
+    const approved = requests.filter(isApprovedRequest).length;
 
-    return { active, pending, completed };
+    return { active, pending, approved, total: summary.total };
   }, [requests]);
 
   return (
@@ -84,8 +80,8 @@ export default function CitizenDashboardPage() {
           icon={<Clock3 className="h-5 w-5" />}
         />
         <MetricCard
-          label="Completed requests"
-          value={String(metrics.completed)}
+          label="Approved requests"
+          value={String(metrics.approved)}
           change="Approved or fully closed"
           icon={<CheckCircle2 className="h-5 w-5" />}
         />
@@ -171,7 +167,7 @@ export default function CitizenDashboardPage() {
             Start a new request from your municipality service catalog.
           </p>
 
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 max-h-[520px] space-y-4 overflow-y-auto pr-2">
             {services.map((service) => (
               <div
                 key={service.id}
