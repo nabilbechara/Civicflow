@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { CheckCircle2, LoaderCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthShell } from "@/components/shared/auth-shell";
@@ -32,7 +31,6 @@ const passwordRequirements = [
 ];
 
 export default function SignUpPage() {
-  const router = useRouter();
   const { signUp } = useAuth();
 
   const [fullName, setFullName] = useState("");
@@ -69,14 +67,14 @@ export default function SignUpPage() {
 
     try {
       const user = await signUp(fullName, email, password, municipality);
-      router.push(getDefaultRedirectForRole(user.role));
+      window.location.assign(getDefaultRedirectForRole(user.role));
+      return;
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : "Account creation failed. Please try again.",
       );
-    } finally {
       setLoading(false);
     }
   }
