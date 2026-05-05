@@ -1,0 +1,2105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicFlow Lebanon — Presentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      :root {
+        --navy: #1b2a4a;
+        --navy-light: #243656;
+        --civic-blue: #2563eb;
+        --civic-blue-light: #3b82f6;
+        --green: #059669;
+        --green-light: #10b981;
+        --white: #ffffff;
+        --light: #f1f5f9;
+        --lighter: #f8fafc;
+        --text: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --red: #dc2626;
+        --amber: #d97706;
+        --orange: #ea580c;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: #0f172a;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        user-select: none;
+      }
+
+      .presentation-container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .slide-wrapper {
+        width: min(96vw, 1200px);
+        height: min(72vh, 675px);
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        background: var(--white);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .slide.active {
+        display: flex;
+      }
+
+      .nav-controls {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 100;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        padding: 8px 20px;
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .nav-btn:hover {
+        background: var(--civic-blue);
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: default;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .slide-dots {
+        display: flex;
+        gap: 6px;
+      }
+      .slide-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.25);
+        cursor: pointer;
+        transition: all 0.25s;
+        border: none;
+      }
+      .slide-dot.active {
+        background: var(--civic-blue);
+        width: 24px;
+        border-radius: 4px;
+      }
+      .slide-dot:hover {
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      .slide-counter {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 13px;
+        font-weight: 500;
+        min-width: 48px;
+        text-align: center;
+      }
+
+      .notes-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 100;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+      }
+      .notes-toggle:hover {
+        background: var(--civic-blue);
+      }
+
+      .notes-panel {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        width: min(800px, 90vw);
+        max-height: 240px;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px 24px;
+        color: #cbd5e1;
+        font-size: 14px;
+        line-height: 1.7;
+        overflow-y: auto;
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+      }
+      .notes-panel.visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+      }
+      .notes-panel .notes-label {
+        color: var(--civic-blue-light);
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 8px;
+      }
+
+      .slide-title {
+        position: relative;
+        background: var(--navy);
+      }
+      .slide-title .bg-image {
+        position: absolute;
+        inset: 0;
+        background: url("https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1400&h=800&fit=crop&q=80")
+          center/cover;
+        opacity: 0.3;
+      }
+      .slide-title .bg-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(27, 42, 74, 0.92) 0%,
+          rgba(27, 42, 74, 0.6) 50%,
+          rgba(5, 150, 105, 0.3) 100%
+        );
+      }
+      .slide-title .content {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 48px 64px;
+      }
+      .slide-title .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(37, 99, 235, 0.2);
+        border: 1px solid rgba(37, 99, 235, 0.3);
+        color: #93c5fd;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        width: fit-content;
+        margin-bottom: 24px;
+      }
+      .slide-title h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 58px;
+        font-weight: 900;
+        color: white;
+        line-height: 1.05;
+        margin-bottom: 14px;
+      }
+      .slide-title h1 span {
+        color: #60a5fa;
+      }
+      .slide-title .subtitle {
+        font-size: 18px;
+        color: #94a3b8;
+        font-weight: 400;
+        max-width: 540px;
+        line-height: 1.55;
+        margin-bottom: 28px;
+      }
+      .slide-title .focus-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #10b981;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .slide-title .focus-line .dot {
+        width: 6px;
+        height: 6px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse-dot 2s infinite;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.5);
+        }
+      }
+
+      .slide-content {
+        flex-direction: row;
+      }
+      .slide-content .left-panel {
+        flex: 1;
+        padding: 32px 36px 32px 44px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+      }
+      .slide-content .right-panel {
+        width: 38%;
+        position: relative;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+      .slide-content .right-panel img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .slide-content .right-panel .img-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.12) 0%,
+          transparent 40%
+        );
+      }
+
+      .section-tag {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        color: var(--civic-blue);
+        margin-bottom: 8px;
+      }
+      .slide-heading {
+        font-family: "Playfair Display", serif;
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--navy);
+        line-height: 1.2;
+        margin-bottom: 18px;
+      }
+
+      .bullet-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .bullet-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--text);
+        line-height: 1.45;
+      }
+      .bullet-list li .icon-wrap {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0px;
+      }
+      .bullet-list li .icon-wrap.red {
+        background: #fee2e2;
+        color: var(--red);
+      }
+      .bullet-list li .icon-wrap.blue {
+        background: #dbeafe;
+        color: var(--civic-blue);
+      }
+      .bullet-list li .icon-wrap.green {
+        background: #d1fae5;
+        color: var(--green);
+      }
+      .bullet-list li .icon-wrap.amber {
+        background: #fef3c7;
+        color: var(--amber);
+      }
+
+      .slide-full {
+        padding: 26px 44px 20px;
+        overflow: hidden;
+      }
+      .slide-full .section-tag {
+        margin-bottom: 6px;
+      }
+      .slide-full .slide-heading {
+        margin-bottom: 16px;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+      }
+      .card {
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        transition: all 0.2s;
+      }
+      .card:hover {
+        border-color: var(--civic-blue);
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+      }
+      .card .card-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+        font-size: 15px;
+      }
+      .card .card-icon.blue {
+        background: #dbeafe;
+        color: var(--civic-blue);
+      }
+      .card .card-icon.green {
+        background: #d1fae5;
+        color: var(--green);
+      }
+      .card .card-icon.navy {
+        background: #e0e7ff;
+        color: var(--navy);
+      }
+      .card .card-icon.amber {
+        background: #fef3c7;
+        color: var(--amber);
+      }
+      .card .card-icon.red {
+        background: #fee2e2;
+        color: var(--red);
+      }
+      .card h4 {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .card p {
+        font-size: 11.5px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .role-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .role-card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: white;
+        transition: all 0.2s;
+      }
+      .role-card:hover {
+        border-color: var(--civic-blue);
+        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
+      }
+      .role-card .role-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .role-card .role-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+      }
+      .role-card h4 {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .role-card ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .role-card ul li {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.4;
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      .role-card ul li::before {
+        content: "";
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: #cbd5e1;
+        flex-shrink: 0;
+        margin-top: 5px;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        background: var(--light);
+        border-radius: 7px;
+        font-size: 12px;
+        color: var(--text);
+        font-weight: 500;
+        border: 1px solid transparent;
+        transition: all 0.15s;
+      }
+      .feature-item:hover {
+        border-color: var(--civic-blue);
+      }
+      .feature-item i {
+        color: var(--civic-blue);
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .services-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .service-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        background: var(--light);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 11.5px;
+        color: var(--text);
+        font-weight: 500;
+        transition: all 0.15s;
+      }
+      .service-chip:hover {
+        border-color: var(--civic-blue);
+        background: #eff6ff;
+      }
+      .service-chip i {
+        color: var(--civic-blue);
+        font-size: 12px;
+      }
+
+      .arch-diagram {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+      }
+      .arch-layer {
+        border-radius: 8px;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+      }
+      .arch-layer.frontend {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+      }
+      .arch-layer.backend {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+      }
+      .arch-layer.database {
+        background: #fff7ed;
+        border-color: #fed7aa;
+      }
+      .arch-layer.auth {
+        background: #faf5ff;
+        border-color: #e9d5ff;
+      }
+      .arch-layer .layer-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 6px;
+      }
+      .arch-layer.frontend .layer-label {
+        color: var(--civic-blue);
+      }
+      .arch-layer.backend .layer-label {
+        color: var(--green);
+      }
+      .arch-layer.database .layer-label {
+        color: var(--orange);
+      }
+      .arch-layer.auth .layer-label {
+        color: #7c3aed;
+      }
+      .arch-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .arch-item {
+        padding: 3px 8px;
+        background: white;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      .arch-flow {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 500;
+        padding: 2px 0;
+      }
+      .arch-flow .arrow {
+        color: var(--civic-blue);
+      }
+
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+      }
+      .data-table thead th {
+        text-align: left;
+        padding: 7px 12px;
+        background: var(--light);
+        font-weight: 700;
+        color: var(--navy);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--border);
+      }
+      .data-table tbody td {
+        padding: 6px 12px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+        vertical-align: top;
+      }
+      .data-table tbody td:first-child {
+        font-weight: 600;
+        color: var(--navy);
+        white-space: nowrap;
+      }
+      .data-table tbody td:last-child {
+        color: var(--muted);
+        line-height: 1.4;
+      }
+      .data-table tbody tr:hover {
+        background: #f8fafc;
+      }
+
+      .cost-highlight {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 14px;
+      }
+      .cost-highlight i {
+        color: var(--green);
+      }
+      .cost-highlight span {
+        font-size: 12px;
+        color: #166534;
+        font-weight: 500;
+      }
+
+      .demo-steps {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 7px;
+      }
+      .demo-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        background: var(--light);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+      .demo-step .step-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--civic-blue);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .demo-step span {
+        font-size: 12px;
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .slide-closing {
+        position: relative;
+        background: var(--navy);
+      }
+      .slide-closing .bg-image {
+        position: absolute;
+        inset: 0;
+        background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1400&h=800&fit=crop&q=80")
+          center/cover;
+        opacity: 0.15;
+      }
+      .slide-closing .bg-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(27, 42, 74, 0.95) 0%,
+          rgba(27, 42, 74, 0.8) 100%
+        );
+      }
+      .slide-closing .content {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 60px;
+        text-align: center;
+      }
+      .slide-closing h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 34px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 24px;
+      }
+      .closing-points {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        max-width: 640px;
+        margin-bottom: 36px;
+      }
+      .closing-point {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+      }
+      .closing-point .cp-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .closing-point .cp-icon.blue {
+        background: rgba(37, 99, 235, 0.2);
+        color: #60a5fa;
+      }
+      .closing-point .cp-icon.green {
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+      }
+      .closing-point span {
+        font-size: 13px;
+        color: #cbd5e1;
+        font-weight: 500;
+      }
+      .slide-closing .thank-you {
+        font-family: "Playfair Display", serif;
+        font-size: 48px;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 6px;
+      }
+      .slide-closing .questions {
+        font-size: 17px;
+        color: #60a5fa;
+        font-weight: 500;
+      }
+
+      .status-flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+      }
+      .status-badge {
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .status-badge.submitted {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .status-badge.review {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-badge.pending {
+        background: #ffe4e6;
+        color: #9f1239;
+      }
+      .status-badge.escalated {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .status-badge.dept-approved {
+        background: #e0e7ff;
+        color: #3730a3;
+      }
+      .status-badge.final {
+        background: #ccfbf1;
+        color: #065f46;
+      }
+      .status-badge.rejected {
+        background: #f1f5f9;
+        color: #475569;
+      }
+      .status-badge.completed {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .priority-badge {
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .priority-badge.low {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .priority-badge.medium {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .priority-badge.high {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .muni-badges {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .muni-badge {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        background: var(--navy);
+        color: white;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .muni-badge i {
+        color: #60a5fa;
+        font-size: 12px;
+      }
+
+      .slide-number {
+        position: absolute;
+        bottom: 8px;
+        right: 16px;
+        font-size: 10px;
+        color: #cbd5e1;
+        font-weight: 600;
+        z-index: 5;
+      }
+      .slide-number.dark {
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      .slide-topbar {
+        height: 3px;
+        background: linear-gradient(90deg, var(--civic-blue), var(--green));
+        flex-shrink: 0;
+      }
+
+      .arch-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .slide.active .fade-up {
+        animation: fadeUp 0.4s ease forwards;
+      }
+      .fade-up {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .slide.active .fade-up:nth-child(2) {
+        animation-delay: 0.08s;
+      }
+      .slide.active .fade-up:nth-child(3) {
+        animation-delay: 0.12s;
+      }
+      .slide.active .fade-up:nth-child(4) {
+        animation-delay: 0.16s;
+      }
+      .slide.active .fade-up:nth-child(5) {
+        animation-delay: 0.2s;
+      }
+      .slide.active .fade-up:nth-child(6) {
+        animation-delay: 0.24s;
+      }
+
+      .sub-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--navy);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+      }
+      .sub-row {
+        display: flex;
+        gap: 6px;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="presentation-container">
+      <div class="slide-wrapper">
+        <!-- SLIDE 1: Title — City skyline at night -->
+        <div
+          class="slide slide-title active"
+          data-notes="Welcome everyone. CivicFlow Lebanon is a digital civic services platform built specifically for Lebanese municipalities. The core idea is simple: make it easier for citizens to access municipal services, and make it easier for municipal staff to manage those services. Right now, too much of the interaction between citizens and their municipalities happens through physical visits, phone calls, and paperwork. CivicFlow digitizes and centralizes that entire process — from viewing services to submitting requests to tracking progress — all in one platform."
+        >
+          <div class="bg-image"></div>
+          <div class="bg-overlay"></div>
+          <div class="content">
+            <div class="badge fade-up">
+              <i data-lucide="building-2" style="width: 13px; height: 13px"></i>
+              Municipal Digital Platform
+            </div>
+            <h1 class="fade-up">CivicFlow<br /><span>Lebanon</span></h1>
+            <p class="subtitle fade-up">
+              A digital municipal services and request management platform
+              connecting citizens, employees, and administrators in one system.
+            </p>
+            <div class="focus-line fade-up">
+              <div class="dot"></div>
+              Improving communication between citizens and municipalities
+            </div>
+          </div>
+          <span class="slide-number dark">01 / 12</span>
+        </div>
+
+        <!-- SLIDE 2: Problem — Government office interior -->
+        <div
+          class="slide slide-content"
+          data-notes="Let's start with the problem. In most Lebanese municipalities today, accessing services is not straightforward. Citizens often have to visit municipal offices in person, make phone calls that may go unanswered, or deal with paperwork that has unclear requirements. There's no single place where a citizen can see what services are available, what documents they need, or how long a request will take. On the municipality side, employees may struggle to organize and prioritize dozens or hundreds of incoming requests. And once a citizen submits a request, they usually have no way to track its progress — they have to keep calling or visiting to ask for updates. There's very limited transparency, tracking, or accountability in the current process."
+        >
+          <div class="left-panel">
+            <div
+              class="slide-topbar"
+              style="position: absolute; top: 0; left: 0; right: 0"
+            ></div>
+            <div class="section-tag fade-up">The Problem</div>
+            <h2 class="slide-heading fade-up" style="font-size: 24px">
+              Municipal services remain<br />fragmented and opaque
+            </h2>
+            <ul class="bullet-list">
+              <li class="fade-up">
+                <span class="icon-wrap red"
+                  ><i
+                    data-lucide="map-pin"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Services handled through physical visits, phone calls, and
+                paperwork
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap red"
+                  ><i
+                    data-lucide="help-circle"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Citizens don't know where to submit, what's required, or how
+                long it takes
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap red"
+                  ><i
+                    data-lucide="layers"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Employees struggle to organize, prioritize, and follow up on
+                requests
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap red"
+                  ><i
+                    data-lucide="eye-off"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Citizens lack visibility after submitting a request
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap red"
+                  ><i
+                    data-lucide="shield-off"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Limited transparency, tracking, and accountability
+              </li>
+            </ul>
+          </div>
+          <div class="right-panel">
+            <img
+              src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=900&fit=crop&q=80"
+              alt="Government municipal office interior with service counters"
+            />
+            <div class="img-overlay"></div>
+          </div>
+          <span class="slide-number">02 / 12</span>
+        </div>
+
+        <!-- SLIDE 3: Current Gaps — Stack of paperwork and documents -->
+        <div
+          class="slide slide-content"
+          data-notes="Now let's look at what specifically is missing from current workflows. There's no centralized platform — citizens, employees, and admins don't share a single system. Request tracking is weak or non-existent. Status updates are rarely communicated to citizens. There's no clear role-based access, meaning the same interface might be shown to everyone regardless of their role. Documents are still handled manually — printed, filed, and potentially lost. Escalated or high-priority requests can be hard to identify among many others. And because citizens have no self-service tracking, they end up repeatedly contacting the municipality just to ask for updates, which wastes time for both sides."
+        >
+          <div class="left-panel">
+            <div
+              class="slide-topbar"
+              style="position: absolute; top: 0; left: 0; right: 0"
+            ></div>
+            <div class="section-tag fade-up">Current Gaps</div>
+            <h2 class="slide-heading fade-up" style="font-size: 24px">
+              What existing workflows<br />are missing
+            </h2>
+            <ul class="bullet-list">
+              <li class="fade-up">
+                <span class="icon-wrap amber"
+                  ><i
+                    data-lucide="unplug"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >No centralized platform for citizens, employees, and admins
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap amber"
+                  ><i
+                    data-lucide="search"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Weak request tracking and limited status updates
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap amber"
+                  ><i
+                    data-lucide="lock"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >No clear role-based access control
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap amber"
+                  ><i
+                    data-lucide="file-x"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Documents handled manually — risk of loss or misplacement
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap amber"
+                  ><i
+                    data-lucide="alert-triangle"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Escalated or high-priority requests are hard to identify
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap amber"
+                  ><i
+                    data-lucide="phone-incoming"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Citizens repeatedly contact municipality for updates
+              </li>
+            </ul>
+          </div>
+          <div class="right-panel">
+            <img
+              src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=900&fit=crop&q=80"
+              alt="Stack of paperwork and municipal documents"
+            />
+            <div class="img-overlay"></div>
+          </div>
+          <span class="slide-number">03 / 12</span>
+        </div>
+
+        <!-- SLIDE 4: Solution — Data dashboard on screen -->
+        <div
+          class="slide slide-content"
+          data-notes="Here's how CivicFlow addresses each of those gaps. First, it centralizes everything — municipal services, news, staff information, and request tracking are all in one place. Citizens can submit requests online and upload the required documents directly through the platform. They get a reference number and can track their request status and full activity history at any time. On the municipality side, staff get dedicated dashboards for reviewing, updating, and assigning requests. The system supports priority levels — low, medium, high — and escalation workflows so urgent issues don't get lost. Role-based access ensures each user only sees what they're allowed to see. The overall result is a process that is more transparent, more organized, and more accountable."
+        >
+          <div class="left-panel">
+            <div
+              class="slide-topbar"
+              style="position: absolute; top: 0; left: 0; right: 0"
+            ></div>
+            <div class="section-tag fade-up">The Solution</div>
+            <h2 class="slide-heading fade-up" style="font-size: 24px">
+              What CivicFlow<br />improves
+            </h2>
+            <ul class="bullet-list">
+              <li class="fade-up">
+                <span class="icon-wrap green"
+                  ><i
+                    data-lucide="layout-dashboard"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Centralizes services, news, staff info, and request tracking
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap green"
+                  ><i
+                    data-lucide="upload"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Online request submission with document uploads
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap green"
+                  ><i
+                    data-lucide="history"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Status tracking and full request history for citizens
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap green"
+                  ><i
+                    data-lucide="bar-chart-3"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Staff dashboards for reviewing, updating, and assigning
+                requests
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap green"
+                  ><i
+                    data-lucide="arrow-up-circle"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Priority levels and escalation workflows
+              </li>
+              <li class="fade-up">
+                <span class="icon-wrap green"
+                  ><i
+                    data-lucide="shield-check"
+                    style="width: 12px; height: 12px"
+                  ></i></span
+                >Role-based access for transparency and accountability
+              </li>
+            </ul>
+          </div>
+          <div class="right-panel">
+            <img
+              src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=900&fit=crop&q=80"
+              alt="Analytics dashboard with charts and data visualization on screen"
+            />
+            <div class="img-overlay"></div>
+          </div>
+          <span class="slide-number">04 / 12</span>
+        </div>
+
+        <!-- SLIDE 5: Users and Roles -->
+        <div
+          class="slide slide-full"
+          data-notes="CivicFlow has four distinct user roles, each with specific permissions. Citizens can register, view municipality services, submit requests with file uploads, track their own requests, and see notifications and news. They cannot access admin panels or see other citizens' requests. Municipal Employees get a dedicated employee dashboard where they can view requests, review assigned ones, update statuses, and add activity messages — but they cannot manage platform-level users. Municipality Admins have broader control within their municipality — they can manage all requests, oversee users, manage news and announcements, and direct the workflow. Finally, Super Admins or Platform Admins have the highest level of access, able to oversee the platform across multiple municipalities if needed."
+        >
+          <div
+            class="slide-topbar"
+            style="position: absolute; top: 0; left: 0; right: 0"
+          ></div>
+          <div class="section-tag fade-up">User Roles</div>
+          <h2 class="slide-heading fade-up">Four roles, clear permissions</h2>
+          <div class="role-grid fade-up">
+            <div class="role-card">
+              <div class="role-header">
+                <div
+                  class="role-icon"
+                  style="background: #dbeafe; color: var(--civic-blue)"
+                >
+                  <i data-lucide="user" style="width: 13px; height: 13px"></i>
+                </div>
+                <h4>Citizen</h4>
+              </div>
+              <ul>
+                <li>Register, log in, view services</li>
+                <li>Submit requests with file uploads</li>
+                <li>Track own requests and activity</li>
+                <li>View notifications and news</li>
+                <li>No admin access, no view of other citizens' data</li>
+              </ul>
+            </div>
+            <div class="role-card">
+              <div class="role-header">
+                <div
+                  class="role-icon"
+                  style="background: #d1fae5; color: var(--green)"
+                >
+                  <i
+                    data-lucide="hard-hat"
+                    style="width: 13px; height: 13px"
+                  ></i>
+                </div>
+                <h4>Municipal Employee</h4>
+              </div>
+              <ul>
+                <li>Access employee dashboard</li>
+                <li>View and review assigned requests</li>
+                <li>Update status, add activity messages</li>
+                <li>Process and move requests forward</li>
+                <li>Cannot manage platform-level users</li>
+              </ul>
+            </div>
+            <div class="role-card">
+              <div class="role-header">
+                <div
+                  class="role-icon"
+                  style="background: #fef3c7; color: var(--amber)"
+                >
+                  <i data-lucide="shield" style="width: 13px; height: 13px"></i>
+                </div>
+                <h4>Municipality Admin</h4>
+              </div>
+              <ul>
+                <li>Admin dashboard for their municipality</li>
+                <li>Manage requests and assignments</li>
+                <li>View user management features</li>
+                <li>Manage news and announcements</li>
+                <li>Oversee workflow and progress</li>
+              </ul>
+            </div>
+            <div class="role-card">
+              <div class="role-header">
+                <div
+                  class="role-icon"
+                  style="background: #e0e7ff; color: var(--navy)"
+                >
+                  <i data-lucide="crown" style="width: 13px; height: 13px"></i>
+                </div>
+                <h4>Super Admin</h4>
+              </div>
+              <ul>
+                <li>Platform-wide administrative controls</li>
+                <li>Oversee multiple municipalities</li>
+                <li>Manage platform settings and users</li>
+                <li>Highest access level and responsibility</li>
+              </ul>
+            </div>
+          </div>
+          <span class="slide-number">05 / 12</span>
+        </div>
+
+        <!-- SLIDE 6: Main Features -->
+        <div
+          class="slide slide-full"
+          data-notes="Let me walk through the main features. The public homepage shows municipality history, staff contacts, and news without requiring login. Users register and log in with strong password validation. Once logged in, each role sees a tailored dashboard. Citizens can browse the service catalog, submit new requests with file uploads, and receive a unique reference number. Requests go through defined statuses — Submitted, Under Review, Pending Documents, Escalated, Department Approved, Final Approval, Rejected, or Completed. Each request also has a priority level: Low, Medium, or High. Every action on a request is logged in an activity feed and timeline, so the full history is always visible. The system supports notifications, admin user management, admin news management, and properly shows an access denied page for unauthorized access attempts."
+        >
+          <div
+            class="slide-topbar"
+            style="position: absolute; top: 0; left: 0; right: 0"
+          ></div>
+          <div class="section-tag fade-up">Features</div>
+          <h2 class="slide-heading fade-up">Platform capabilities</h2>
+          <div class="feature-grid fade-up">
+            <div class="feature-item">
+              <i data-lucide="globe"></i>Public homepage
+            </div>
+            <div class="feature-item">
+              <i data-lucide="log-in"></i>Login & registration
+            </div>
+            <div class="feature-item">
+              <i data-lucide="lock-keyhole"></i>Password validation
+            </div>
+            <div class="feature-item">
+              <i data-lucide="layout-dashboard"></i>Role-based dashboards
+            </div>
+            <div class="feature-item">
+              <i data-lucide="book-open"></i>Service catalog
+            </div>
+            <div class="feature-item">
+              <i data-lucide="plus-circle"></i>Request submission
+            </div>
+            <div class="feature-item">
+              <i data-lucide="paperclip"></i>Document upload
+            </div>
+            <div class="feature-item">
+              <i data-lucide="hash"></i>Reference numbers
+            </div>
+            <div class="feature-item">
+              <i data-lucide="activity"></i>Activity timeline
+            </div>
+            <div class="feature-item">
+              <i data-lucide="bell"></i>Notifications
+            </div>
+            <div class="feature-item">
+              <i data-lucide="users-cog"></i>User management
+            </div>
+            <div class="feature-item">
+              <i data-lucide="newspaper"></i>News management
+            </div>
+          </div>
+          <div class="fade-up" style="margin-top: 12px">
+            <div class="sub-label">Request Statuses</div>
+            <div class="status-flow">
+              <span class="status-badge submitted">Submitted</span>
+              <span class="status-badge review">Under Review</span>
+              <span class="status-badge pending">Pending Docs</span>
+              <span class="status-badge escalated">Escalated</span>
+              <span class="status-badge dept-approved">Dept. Approved</span>
+              <span class="status-badge final">Final Approval</span>
+              <span class="status-badge rejected">Rejected</span>
+              <span class="status-badge completed">Completed</span>
+            </div>
+          </div>
+          <div class="fade-up">
+            <div class="sub-label" style="margin-top: 8px">Priority Levels</div>
+            <div class="sub-row">
+              <span class="priority-badge low">Low</span>
+              <span class="priority-badge medium">Medium</span>
+              <span class="priority-badge high">High</span>
+            </div>
+          </div>
+          <span class="slide-number">06 / 12</span>
+        </div>
+
+        <!-- SLIDE 7: Example Services -->
+        <div
+          class="slide slide-full"
+          data-notes="Here are examples of the municipal services available in the system. These cover a wide range of what citizens typically need from their municipality — from residency certificates and business permits to infrastructure issues like road maintenance, streetlight repair, water leaks, and drainage blockages. There are also civic concern types like building complaints, noise complaints, and graffiti reports, as well as permits for events, signage, and sidewalk occupancy. The system's seed data includes three municipalities: Beirut Municipality, Jounieh Municipality, and Zahle Municipality. The service catalog is designed to be extensible — new services can be added as needed for any municipality."
+        >
+          <div
+            class="slide-topbar"
+            style="position: absolute; top: 0; left: 0; right: 0"
+          ></div>
+          <div class="section-tag fade-up">Service Catalog</div>
+          <h2 class="slide-heading fade-up">Example services supported</h2>
+          <div class="services-grid fade-up">
+            <div class="service-chip">
+              <i data-lucide="file-text"></i>Residency Certificate
+            </div>
+            <div class="service-chip">
+              <i data-lucide="briefcase"></i>Business Permit
+            </div>
+            <div class="service-chip">
+              <i data-lucide="building"></i>Building Complaint
+            </div>
+            <div class="service-chip">
+              <i data-lucide="construction"></i>Road Maintenance
+            </div>
+            <div class="service-chip">
+              <i data-lucide="lightbulb"></i>Streetlight Repair
+            </div>
+            <div class="service-chip">
+              <i data-lucide="trash-2"></i>Waste Collection Issue
+            </div>
+            <div class="service-chip">
+              <i data-lucide="trees"></i>Tree Pruning Request
+            </div>
+            <div class="service-chip">
+              <i data-lucide="calendar"></i>Event Permit
+            </div>
+            <div class="service-chip">
+              <i data-lucide="car"></i>Parking Obstruction
+            </div>
+            <div class="service-chip">
+              <i data-lucide="droplets"></i>Water Leak Report
+            </div>
+            <div class="service-chip">
+              <i data-lucide="footprints"></i>Sidewalk Occupancy Permit
+            </div>
+            <div class="service-chip">
+              <i data-lucide="flower-2"></i>Public Garden Maintenance
+            </div>
+            <div class="service-chip">
+              <i data-lucide="receipt"></i>Municipal Tax Statement
+            </div>
+            <div class="service-chip">
+              <i data-lucide="signpost"></i>Signage Permit
+            </div>
+            <div class="service-chip">
+              <i data-lucide="spray-can"></i>Graffiti / Vandalism
+            </div>
+            <div class="service-chip">
+              <i data-lucide="waves"></i>Drainage Blockage
+            </div>
+            <div class="service-chip">
+              <i data-lucide="volume-x"></i>Noise Complaint
+            </div>
+          </div>
+          <div class="muni-badges fade-up">
+            <div class="muni-badge">
+              <i data-lucide="map-pin"></i>Beirut Municipality
+            </div>
+            <div class="muni-badge">
+              <i data-lucide="map-pin"></i>Jounieh Municipality
+            </div>
+            <div class="muni-badge">
+              <i data-lucide="map-pin"></i>Zahle Municipality
+            </div>
+          </div>
+          <span class="slide-number">07 / 12</span>
+        </div>
+
+        <!-- SLIDE 8: System Architecture -->
+        <div
+          class="slide slide-full"
+          data-notes="Let me explain the system architecture. The frontend is a Next.js application using React for the UI, TypeScript for type safety, and Tailwind CSS for styling. It includes role-based pages and dashboards for each user type. The backend is a FastAPI application — a modern, fast Python-based API framework. It exposes endpoints for authentication, request management, document upload and download, and status updates. The data layer uses SQLAlchemy as the ORM, connected to PostgreSQL through psycopg2. The database stores tenants, users, services, service requests, request activity logs, and request documents. For authentication, the system uses JWT access tokens, Argon2 password hashing through pwdlib, and role-based access control with protected routes. The flow: user logs in, frontend calls FastAPI, backend validates auth and role, reads/writes via SQLAlchemy, database stores everything, and dashboards show updated progress."
+        >
+          <div
+            class="slide-topbar"
+            style="position: absolute; top: 0; left: 0; right: 0"
+          ></div>
+          <div class="section-tag fade-up">Architecture</div>
+          <h2 class="slide-heading fade-up" style="font-size: 22px">
+            System architecture overview
+          </h2>
+          <div class="arch-layout fade-up">
+            <div class="arch-diagram">
+              <div class="arch-layer frontend">
+                <div class="layer-label">Frontend</div>
+                <div class="arch-items">
+                  <div class="arch-item">Next.js</div>
+                  <div class="arch-item">React</div>
+                  <div class="arch-item">TypeScript</div>
+                  <div class="arch-item">Tailwind CSS</div>
+                  <div class="arch-item">Role-based Pages</div>
+                </div>
+              </div>
+              <div class="arch-flow">
+                <span class="arrow">↓</span> HTTP / REST API
+              </div>
+              <div class="arch-layer backend">
+                <div class="layer-label">Backend API</div>
+                <div class="arch-items">
+                  <div class="arch-item">FastAPI</div>
+                  <div class="arch-item">Auth Endpoints</div>
+                  <div class="arch-item">Request Management</div>
+                  <div class="arch-item">File Upload/Download</div>
+                  <div class="arch-item">Status Updates</div>
+                </div>
+              </div>
+              <div class="arch-flow">
+                <span class="arrow">↓</span> SQLAlchemy ORM
+              </div>
+              <div class="arch-layer database">
+                <div class="layer-label">Database — PostgreSQL</div>
+                <div class="arch-items">
+                  <div class="arch-item">Tenants</div>
+                  <div class="arch-item">Users</div>
+                  <div class="arch-item">Services</div>
+                  <div class="arch-item">Requests</div>
+                  <div class="arch-item">Activity</div>
+                  <div class="arch-item">Documents</div>
+                </div>
+              </div>
+            </div>
+            <div class="arch-diagram">
+              <div class="arch-layer auth">
+                <div class="layer-label">Auth & Authorization</div>
+                <div class="arch-items">
+                  <div class="arch-item">JWT Access Tokens</div>
+                  <div class="arch-item">Argon2 Hashing (pwdlib)</div>
+                  <div class="arch-item">Role-based Access Control</div>
+                  <div class="arch-item">Protected Routes</div>
+                </div>
+              </div>
+              <div
+                style="
+                  margin-top: 10px;
+                  padding: 12px 14px;
+                  background: var(--light);
+                  border-radius: 8px;
+                  border: 1px solid var(--border);
+                "
+              >
+                <div class="sub-label" style="margin-bottom: 8px">
+                  Request Flow
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px">
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 7px;
+                      font-size: 11px;
+                      color: var(--text);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        background: var(--civic-blue);
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 9px;
+                        font-weight: 700;
+                        flex-shrink: 0;
+                      "
+                      >1</span
+                    >User logs in or registers
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 7px;
+                      font-size: 11px;
+                      color: var(--text);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        background: var(--civic-blue);
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 9px;
+                        font-weight: 700;
+                        flex-shrink: 0;
+                      "
+                      >2</span
+                    >Frontend sends request to FastAPI
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 7px;
+                      font-size: 11px;
+                      color: var(--text);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        background: var(--civic-blue);
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 9px;
+                        font-weight: 700;
+                        flex-shrink: 0;
+                      "
+                      >3</span
+                    >Backend validates auth and role
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 7px;
+                      font-size: 11px;
+                      color: var(--text);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        background: var(--civic-blue);
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 9px;
+                        font-weight: 700;
+                        flex-shrink: 0;
+                      "
+                      >4</span
+                    >Backend reads/writes via SQLAlchemy
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 7px;
+                      font-size: 11px;
+                      color: var(--text);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        background: var(--civic-blue);
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 9px;
+                        font-weight: 700;
+                        flex-shrink: 0;
+                      "
+                      >5</span
+                    >Database stores all data
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 7px;
+                      font-size: 11px;
+                      color: var(--text);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        background: var(--civic-blue);
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 9px;
+                        font-weight: 700;
+                        flex-shrink: 0;
+                      "
+                      >6</span
+                    >Dashboards show updated progress
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="slide-number">08 / 12</span>
+        </div>
+
+        <!-- SLIDE 9: Technologies Used -->
+        <div
+          class="slide slide-full"
+          data-notes="Here's a breakdown of every technology used and why. Next.js for the frontend — modern React framework with routing and fast rendering. React for interactive interfaces. TypeScript for type safety. Tailwind CSS for fast responsive styling. Lucide React for clean icons. Framer Motion for animations. Recharts for dashboard charts. FastAPI for the backend — fast, modern, Python-based with auto documentation. SQLAlchemy as the ORM. PostgreSQL as the production database. JWT for secure sessions. Argon2 for password hashing. Git and GitHub for version control. Render as a deployment option since the project includes render.yaml."
+        >
+          <div
+            class="slide-topbar"
+            style="position: absolute; top: 0; left: 0; right: 0"
+          ></div>
+          <div class="section-tag fade-up">Tech Stack</div>
+          <h2 class="slide-heading fade-up">Technologies used and why</h2>
+          <div style="overflow: hidden" class="fade-up">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Technology</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Next.js</td>
+                  <td>
+                    Modern React framework with routing, fast rendering,
+                    scalable structure
+                  </td>
+                </tr>
+                <tr>
+                  <td>React</td>
+                  <td>Interactive user interfaces for all user roles</td>
+                </tr>
+                <tr>
+                  <td>TypeScript</td>
+                  <td>Typed data models, safer code, fewer runtime mistakes</td>
+                </tr>
+                <tr>
+                  <td>Tailwind CSS</td>
+                  <td>
+                    Fast, consistent, responsive styling without custom CSS
+                  </td>
+                </tr>
+                <tr>
+                  <td>Lucide React</td>
+                  <td>Clean, modern icon library for consistent UI</td>
+                </tr>
+                <tr>
+                  <td>Framer Motion</td>
+                  <td>Smooth UI transitions and animations</td>
+                </tr>
+                <tr>
+                  <td>Recharts</td>
+                  <td>Dashboard-style charts and visual metrics</td>
+                </tr>
+                <tr>
+                  <td>FastAPI</td>
+                  <td>Fast, modern Python backend with automatic API docs</td>
+                </tr>
+                <tr>
+                  <td>SQLAlchemy</td>
+                  <td>ORM for modeling and interacting with database tables</td>
+                </tr>
+                <tr>
+                  <td>PostgreSQL</td>
+                  <td>Production-ready relational database</td>
+                </tr>
+                <tr>
+                  <td>JWT</td>
+                  <td>Secure login sessions and API authentication</td>
+                </tr>
+                <tr>
+                  <td>Argon2</td>
+                  <td>
+                    Industry-standard password hashing for maximum security
+                  </td>
+                </tr>
+                <tr>
+                  <td>Git / GitHub</td>
+                  <td>Version control and team collaboration</td>
+                </tr>
+                <tr>
+                  <td>Render</td>
+                  <td>
+                    Deployment option — project includes render.yaml config
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <span class="slide-number">09 / 12</span>
+        </div>
+
+        <!-- SLIDE 10: Cost -->
+        <div
+          class="slide slide-full"
+          data-notes="One of the key advantages of CivicFlow is that the development cost is minimal because the entire stack is open-source. Local development can be completely free. GitHub is free for version control. Real deployment may introduce some costs, but they can start very small. A domain name is an optional yearly cost. Hosting can start on free tiers and scale. Database hosting similarly can start free. File storage is local in the prototype but would need cloud storage in production. Maintenance requires developer time. SMS or email notifications would add external service costs later. The bottom line: the current prototype can be developed and even deployed at very low cost. Production scaling depends on traffic, storage, and hosting choices."
+        >
+          <div
+            class="slide-topbar"
+            style="position: absolute; top: 0; left: 0; right: 0"
+          ></div>
+          <div class="section-tag fade-up">Cost Analysis</div>
+          <h2 class="slide-heading fade-up">
+            Development and deployment costs
+          </h2>
+          <div style="overflow: hidden" class="fade-up">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Cost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Domain Name</td>
+                  <td>Optional — yearly fee if custom domain needed</td>
+                </tr>
+                <tr>
+                  <td>Frontend / Backend Hosting</td>
+                  <td>Free tier possible; paid tier if traffic increases</td>
+                </tr>
+                <tr>
+                  <td>Database Hosting</td>
+                  <td>Free tier possible; paid for production reliability</td>
+                </tr>
+                <tr>
+                  <td>File Storage</td>
+                  <td>
+                    Local in prototype; cloud storage adds cost in production
+                  </td>
+                </tr>
+                <tr>
+                  <td>Maintenance</td>
+                  <td>Developer or admin time investment</td>
+                </tr>
+                <tr>
+                  <td>SMS / Email Notifications</td>
+                  <td>Future addition — external service costs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="cost-highlight fade-up">
+            <i
+              data-lucide="check-circle-2"
+              style="width: 18px; height: 18px"
+            ></i>
+            <span
+              >Prototype can be developed at very low cost. Production depends
+              on scale, storage, and hosting choices.</span
+            >
+          </div>
+          <span class="slide-number">10 / 12</span>
+        </div>
+
+        <!-- SLIDE 11: Demo Transition — Person working on laptop -->
+        <div
+          class="slide slide-content"
+          data-notes="Now I'll transition to the live demo, which will take about 10 minutes. The demo is not embedded in the PowerPoint — I'll switch to the actual running application. Here's the plan: I'll start by opening the public homepage to show municipality information, news, staff, and services. Then I'll register or log in as a citizen and submit a municipal service request including uploading documents. I'll show the confirmation with reference number. Then I'll track the request from the citizen dashboard. After that, I'll switch to the employee or admin view to show how the municipality sees the request, update the status and priority, and then switch back to show the citizen sees the update in real time."
+        >
+          <div class="left-panel">
+            <div
+              class="slide-topbar"
+              style="position: absolute; top: 0; left: 0; right: 0"
+            ></div>
+            <div class="section-tag fade-up">Transition</div>
+            <h2 class="slide-heading fade-up" style="font-size: 24px">
+              Live demo plan
+            </h2>
+            <p
+              class="fade-up"
+              style="
+                font-size: 12.5px;
+                color: var(--muted);
+                line-height: 1.5;
+                margin-bottom: 14px;
+              "
+            >
+              The demo runs in the live application — approximately 10 minutes.
+            </p>
+            <div class="demo-steps fade-up">
+              <div class="demo-step">
+                <div class="step-num">1</div>
+                <span>Open public homepage</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">2</div>
+                <span>Show services, news, staff</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">3</div>
+                <span>Log in as a citizen</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">4</div>
+                <span>Submit a service request</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">5</div>
+                <span>Upload supporting documents</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">6</div>
+                <span>Show confirmation & reference</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">7</div>
+                <span>Track request as citizen</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">8</div>
+                <span>Switch to employee/admin</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">9</div>
+                <span>Review and update request</span>
+              </div>
+              <div class="demo-step">
+                <div class="step-num">10</div>
+                <span>Citizen sees the update</span>
+              </div>
+            </div>
+          </div>
+          <div class="right-panel">
+            <img
+              src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=900&fit=crop&q=80"
+              alt="Laptop screen showing web application demo"
+            />
+            <div class="img-overlay"></div>
+          </div>
+          <span class="slide-number">11 / 12</span>
+        </div>
+
+        <!-- SLIDE 12: Closing — Mediterranean coastal scene -->
+        <div
+          class="slide slide-closing"
+          data-notes="To wrap up, here's the value CivicFlow brings. Easier access to municipal services — citizens don't need to visit in person just to find out what's available. Less paperwork and confusion — everything is digital and clear. Clearer communication between citizens and municipalities — both sides see the same data. Better request tracking — no more lost requests. More organized municipal workflows — employees and admins have dedicated dashboards. And stronger transparency and accountability — every action is logged. Thank you for your time, and I'm happy to take any questions."
+        >
+          <div class="bg-image"></div>
+          <div class="bg-overlay"></div>
+          <div class="content">
+            <h2 class="fade-up">Building smarter municipalities</h2>
+            <div class="closing-points fade-up">
+              <div class="closing-point">
+                <div class="cp-icon blue">
+                  <i
+                    data-lucide="mouse-pointer-click"
+                    style="width: 15px; height: 15px"
+                  ></i>
+                </div>
+                <span>Easier access to services</span>
+              </div>
+              <div class="closing-point">
+                <div class="cp-icon green">
+                  <i
+                    data-lucide="file-check"
+                    style="width: 15px; height: 15px"
+                  ></i>
+                </div>
+                <span>Less paperwork and confusion</span>
+              </div>
+              <div class="closing-point">
+                <div class="cp-icon blue">
+                  <i
+                    data-lucide="message-circle"
+                    style="width: 15px; height: 15px"
+                  ></i>
+                </div>
+                <span>Clearer communication</span>
+              </div>
+              <div class="closing-point">
+                <div class="cp-icon green">
+                  <i
+                    data-lucide="list-checks"
+                    style="width: 15px; height: 15px"
+                  ></i>
+                </div>
+                <span>Better request tracking</span>
+              </div>
+              <div class="closing-point">
+                <div class="cp-icon blue">
+                  <i
+                    data-lucide="settings-2"
+                    style="width: 15px; height: 15px"
+                  ></i>
+                </div>
+                <span>Organized workflows</span>
+              </div>
+              <div class="closing-point">
+                <div class="cp-icon green">
+                  <i data-lucide="eye" style="width: 15px; height: 15px"></i>
+                </div>
+                <span>Transparency and accountability</span>
+              </div>
+            </div>
+            <div class="thank-you fade-up" style="margin-top: 12px">
+              Thank You
+            </div>
+            <div class="questions fade-up">Questions?</div>
+          </div>
+          <span class="slide-number dark">12 / 12</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="notes-toggle" id="notesToggle">
+      <i
+        data-lucide="message-square-text"
+        style="width: 14px; height: 14px"
+      ></i>
+      Speaker Notes
+    </button>
+
+    <div class="notes-panel" id="notesPanel">
+      <div class="notes-label">Speaker Notes</div>
+      <div id="notesContent"></div>
+    </div>
+
+    <div class="nav-controls">
+      <button class="nav-btn" id="prevBtn" disabled>
+        <i data-lucide="chevron-left" style="width: 18px; height: 18px"></i>
+      </button>
+      <div class="slide-dots" id="slideDots"></div>
+      <span class="slide-counter" id="slideCounter">1 / 12</span>
+      <button class="nav-btn" id="nextBtn">
+        <i data-lucide="chevron-right" style="width: 18px; height: 18px"></i>
+      </button>
+    </div>
+
+    <script>
+      lucide.createIcons();
+
+      const slides = document.querySelectorAll(".slide");
+      const totalSlides = slides.length;
+      let currentSlide = 0;
+
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const slideCounter = document.getElementById("slideCounter");
+      const slideDots = document.getElementById("slideDots");
+      const notesToggle = document.getElementById("notesToggle");
+      const notesPanel = document.getElementById("notesPanel");
+      const notesContent = document.getElementById("notesContent");
+
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement("button");
+        dot.className = "slide-dot" + (i === 0 ? " active" : "");
+        dot.addEventListener("click", () => goToSlide(i));
+        slideDots.appendChild(dot);
+      }
+
+      function updateSlide() {
+        slides.forEach((s, i) => {
+          s.classList.remove("active");
+          if (i === currentSlide) s.classList.add("active");
+        });
+        const dots = slideDots.querySelectorAll(".slide-dot");
+        dots.forEach((d, i) =>
+          d.classList.toggle("active", i === currentSlide),
+        );
+        slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+        notesContent.textContent =
+          slides[currentSlide].getAttribute("data-notes") || "";
+      }
+
+      function goToSlide(i) {
+        currentSlide = i;
+        updateSlide();
+      }
+      function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+          currentSlide++;
+          updateSlide();
+        }
+      }
+      function prevSlide() {
+        if (currentSlide > 0) {
+          currentSlide--;
+          updateSlide();
+        }
+      }
+
+      prevBtn.addEventListener("click", prevSlide);
+      nextBtn.addEventListener("click", nextSlide);
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " ") {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === "n" || e.key === "N") {
+          notesPanel.classList.toggle("visible");
+        }
+      });
+
+      notesToggle.addEventListener("click", () =>
+        notesPanel.classList.toggle("visible"),
+      );
+      updateSlide();
+    </script>
+  </body>
+</html>

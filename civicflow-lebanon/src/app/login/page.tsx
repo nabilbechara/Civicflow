@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthShell } from "@/components/shared/auth-shell";
@@ -10,7 +9,6 @@ import { getDefaultRedirectForRole } from "@/lib/auth";
 import { useAuth } from "@/context/auth-context";
 
 export default function LoginPage() {
-  const router = useRouter();
   const { signIn } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -26,14 +24,14 @@ export default function LoginPage() {
 
     try {
       const user = await signIn(email, password);
-      router.push(getDefaultRedirectForRole(user.role));
+      window.location.assign(getDefaultRedirectForRole(user.role));
+      return;
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
           : "Login failed. Please check your credentials.",
       );
-    } finally {
       setLoading(false);
     }
   }
